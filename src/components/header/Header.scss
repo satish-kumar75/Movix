@@ -55,6 +55,7 @@
             color: white;
             font-weight: 500;
             position: relative;
+            cursor: pointer;
 
             &.searchIcon {
                 margin-right: 0;
@@ -111,6 +112,7 @@
                 display: flex;
                 flex-direction: column;
                 align-items: flex-start;
+                cursor: pointer;
 
                 &:last-child {
                     display: none;

@@ -12,24 +12,35 @@ import dayjs from "dayjs";
 import ContentWrapper from "../contentWrapper/ContentWrapper";
 import Img from "../lazyLoadImage/Img";
 import PosterFallback from "../../assets/no-poster.png";
+import CircleRating from "../circleRating/CircleRating";
 
 import "./style.scss";
+import Geners from "../genres/Geners";
 
 const Carousel = ({ data, loading }) => {
   const carouselContainer = useRef();
   const { url } = useSelector((state) => state.home);
   const navigate = useNavigate();
-  const navigation = (dir) => {};
+  const navigation = (dir) => {
+    const container = carouselContainer.current;
+    const scrollAmount =
+      dir === "left"
+        ? container.scrollLeft - (container.offsetWidth + 20)
+        : container.scrollLeft + (container.offsetWidth + 20);
 
-  const skItem = () => {
+    container.scrollTo({
+      left: scrollAmount,
+      behavior: "smooth",
+    });
+  };
+
+  const skItem = (index) => {
     return (
-      <div className="skeletonItem">
-        <div className="posterBlock skeleton">
-          <div className="textBlock">
-            <div className="title skeleton">
-              <div className="date skeleton"></div>
-            </div>
-          </div>
+      <div className="skeletonItem" key={index}>
+        <div className="posterBlock skeleton" />
+        <div className="textBlock">
+          <div className="title skeleton" />
+          <div className="date skeleton" />
         </div>
       </div>
     );
@@ -47,15 +58,21 @@ const Carousel = ({ data, loading }) => {
           onClick={() => navigation("right")}
         />
         {!loading ? (
-          <div className="carouselItems">
+          <div ref={carouselContainer} className="carouselItems">
             {data?.map((item) => {
               const posterUrl = item.poster_path
                 ? url.poster + item.poster_path
                 : PosterFallback;
               return (
-                <div key={item.id} className="carouselItem">
+                <div
+                  key={item.id}
+                  className="carouselItem"
+                  onClick={() => navigate(`/${item.media_type}/${item.id}`)}
+                >
                   <div className="posterBlock">
                     <Img src={posterUrl} />
+                    <CircleRating rating={item.vote_average.toFixed(1)} />
+                    <Geners data={item.genre_ids.slice(0, 3)} />
                   </div>
                   <div className="textBlock">
                     <span className="title">{item.title || item.name}</span>
@@ -71,11 +88,7 @@ const Carousel = ({ data, loading }) => {
           </div>
         ) : (
           <div className="loadingSkeleton">
-            {skItem()}
-            {skItem()}
-            {skItem()}
-            {skItem()}
-            {skItem()}
+            {[...Array(5)].map((_, index) => skItem(index))}
           </div>
         )}
       </ContentWrapper>
