@@ -55,10 +55,10 @@ const Header = () => {
   const searchQueryHandler = (e) => {
     if (e.key === "Enter" && query.length > 0) {
       navigate(`/search/${query}`);
+      setTimeout(() => {
+        setShowSearch(false);
+      }, 1000);
     }
-    setTimeout(() => {
-      setShowSearch(false);
-    }, 1000);
   };
 
   const navigationHandler = (type) => {
