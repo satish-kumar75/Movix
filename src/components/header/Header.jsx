@@ -104,6 +104,7 @@ const Header = () => {
         <div className="searchBar">
           <ContentWrapper>
             <div className="searchInput">
+              <HiOutlineSearch />
               <input
                 type="text"
                 placeholder="Search for a movie or TV shows..."
