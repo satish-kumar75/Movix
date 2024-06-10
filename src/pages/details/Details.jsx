@@ -7,7 +7,6 @@ import Cast from "../details/cast/Cast";
 import VideosSection from "./VideosSection/VideoSection";
 import SimilarMovies from "./carousels/SimilarMovies";
 import Recommendations from "./carousels/Recommendations";
-import Person from "../person/Person";
 
 const Details = () => {
   const { mediaType, id } = useParams();
@@ -15,7 +14,6 @@ const Details = () => {
   const { data: credits, loading: creditsLoading } = useFetch(
     `/${mediaType}/${id}/credits`
   );
-  const { data: person, loading: personLoading } = useFetch(`/person/10`);
   return (
     <div>
       <DetailsBanner video={data?.results?.[0]} crew={credits?.crew} />
@@ -23,7 +21,6 @@ const Details = () => {
       <VideosSection data={data} loading={loading} />
       <SimilarMovies mediaType={mediaType} id={id} />
       <Recommendations mediaType={mediaType} id={id} />
-      <Person />
     </div>
   );
 };

@@ -11,6 +11,7 @@ import SearchResult from "./pages/searchResult/SearchResult";
 import Explore from "./pages/explore/Explore";
 import Details from "./pages/details/Details";
 import PageNotFound from "./pages/404/PageNotFound";
+import Person from "./pages/person/Person";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -56,6 +57,7 @@ const App = () => {
         <Route path="/:mediaType/:id" element={<Details />} />
         <Route path="/search/:query" element={<SearchResult />} />
         <Route path="/explore/:mediaType" element={<Explore />} />
+        <Route path="/person/:personId" element={<Person />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
       <Footer />

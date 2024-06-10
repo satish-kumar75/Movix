@@ -34,7 +34,12 @@
         cursor: pointer;
 
         img {
-            height: 50px;
+            height: 35px;
+
+            @include md {
+                height: 50px;
+
+            }
         }
     }
 

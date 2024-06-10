@@ -13,6 +13,7 @@
     .contentWrapper {
         position: relative;
         padding: 0;
+        overflow-x: hidden;
 
         &::after {
             content: "";
@@ -31,7 +32,7 @@
             width: 80px;
             background: linear-gradient(90deg, rgba(4, 21, 45, 0) 0%, #04152d 79.17%);
             top: 45px;
-            right: 0;
+            right: -20px;
             z-index: 1;
 
             @include md {
@@ -61,6 +62,17 @@
         .listItem {
             text-align: center;
             color: white;
+            cursor: pointer;
+
+            &:hover {
+                img {
+                    transform: scale(1.1);
+                }
+
+                .name {
+                    color: rgb(190, 202, 220);
+                }
+            }
 
             .profileImg {
                 width: 125px;
@@ -83,9 +95,6 @@
                     display: block;
                     transition: transform 0.3s ease-in-out;
 
-                    &:hover {
-                        transform: scale(1.1);
-                    }
                 }
             }
 
@@ -93,6 +102,8 @@
                 font-size: 14px;
                 line-height: 20px;
                 font-weight: 600;
+                transition: all 0.3s ease-in-out;
+
 
                 @include md {
                     font-size: 18px;
