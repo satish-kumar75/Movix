@@ -16,11 +16,13 @@ const HeroBanner = () => {
   const { data, loading } = useFetch("/movie/upcoming");
 
   useEffect(() => {
-    const bg =
-      url.backdrop +
-      data?.results?.[Math.floor(Math.random() * 20)]?.backdrop_path;
-    setBackground(bg);
-  }, [data]);
+    if (data && data.results) {
+      const random = Math.floor(Math.random() * data.results.length);
+      console.log(random);
+      const bg = url.backdrop + data.results[random]?.backdrop_path;
+      setBackground(bg);
+    }
+  }, [data, url.backdrop]);
 
   const searchQueryHandler = (e) => {
     if (e.key === "Enter" && query.length > 0) {
