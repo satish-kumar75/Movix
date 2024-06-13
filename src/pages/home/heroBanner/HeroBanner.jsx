@@ -1,65 +1,111 @@
-/* eslint-disable no-unused-vars */
-import { useState, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import "./style.scss";
 import useFetch from "../../../hooks/useFetch";
 import Img from "../../../components/lazyLoadImage/Img";
-import ContentWrapper from "../../../components/contentWrapper/ContentWrapper";
+import { PlayIcon } from "../../details/PlayIcon";
+import Geners from "../../../components/genres/Geners";
+import CircleRating from "../../../components/circleRating/CircleRating";
+import dayjs from "dayjs";
 
 const HeroBanner = () => {
-  const [background, setBackground] = useState("");
-  const [query, setQuery] = useState("");
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [prevIndex, setPrevIndex] = useState(0);
+  const carouselRef = useRef(null);
+  const sliderRef = useRef(null);
+  const thumbnailBorderRef = useRef(null);
+
   const navigate = useNavigate();
   const { url } = useSelector((state) => state.home);
 
   const { data, loading } = useFetch("/movie/upcoming");
 
-  useEffect(() => {
-    if (data && data.results) {
-      const random = Math.floor(Math.random() * data.results.length);
-      console.log(random);
-      const bg = url.backdrop + data.results[random]?.backdrop_path;
-      setBackground(bg);
-    }
-  }, [data, url.backdrop]);
-
-  const searchQueryHandler = (e) => {
-    if (e.key === "Enter" && query.length > 0) {
-      navigate(`/search/${query}`);
-    }
+  const handleThumbnailClick = (index) => {
+    setPrevIndex(currentIndex);
+    setCurrentIndex(index);
   };
 
-  return (
-    <div>
-      <div className="heroBanner">
-        {!loading && (
-          <div className="backdrop-img">
-            <Img src={background} />
+  if (loading && !data) {
+    return (
+      <div className="banner" ref={carouselRef}>
+        <div className="contentS">
+          <div className="titleS skeleton"></div>
+          <div className="genereDiv">
+            {[1, 2, 3, 4].map((_, index) => (
+              <div className="genereS skeleton" key={index}></div>
+            ))}
           </div>
-        )}
-        <div className="opacity-layer"></div>
-        <ContentWrapper>
-          <div className="heroBannerContent">
-            <span className="title">Welcome</span>
-            <span className="subTitle">
-              Millions fo movies, TV shows and people to discover. Explore Now
-            </span>
-            <div className="searchInput">
-              <input
-                type="text"
-                placeholder="Search for a movie or TV shows..."
-                onChange={(e) => {
-                  setQuery(e.target.value);
-                }}
-                onKeyUp={searchQueryHandler}
-              />
-              <button>Search</button>
-            </div>
+          <div className="desS skeleton"></div>
+          <div className="rowS">
+            <div className="circle skeleton"></div>
+            <div className="buttonS skeleton"></div>
           </div>
-        </ContentWrapper>
+        </div>
+        <div className="thumbnail" ref={thumbnailBorderRef}>
+          {[1, 2, 3, 4, 5, 6].map((_, index) => (
+            <div className="item skeleton" key={index}></div>
+          ))}
+        </div>
       </div>
-    </div>
+    );
+  }
+
+  return (
+    <>
+      <div className="banner" ref={carouselRef}>
+        <div className="list" ref={sliderRef}>
+          {data?.results?.map((item, index) => (
+            <div
+              className={`item
+                ${index === currentIndex ? "active slide-in" : ""}
+                ${index === prevIndex ? "slide-out" : ""}`}
+              key={index}
+            >
+              <Img
+                src={url.backdrop + item.backdrop_path}
+                alt={`img${index + 1}`}
+              />
+              <div className="content">
+                <h1 className="title">
+                  {" "}
+                  {`${item.name || item.title} (${dayjs(
+                    item.release_date
+                  ).format("YYYY")})`}
+                </h1>
+                <Geners data={item.genre_ids} />
+                <div className="des">{item.overview}</div>
+                <div className="row">
+                  <CircleRating rating={item.vote_average.toFixed(1)} />
+                  <div
+                    className="playbtn"
+                    onClick={() => navigate(`/movie/${item.id}`)}
+                  >
+                    <PlayIcon />
+                    <span className="text">Watch Now</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="thumbnail" ref={thumbnailBorderRef}>
+          {data?.results?.map((item, index) => (
+            <div
+              className={`item ${index === currentIndex ? "active" : ""}`}
+              key={index}
+              onClick={() => handleThumbnailClick(index)}
+            >
+              <Img
+                src={url.poster + item.poster_path}
+                alt={`thumbnail${index + 1}`}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="opacity-layer"></div>
+    </>
   );
 };
 
