@@ -30,3 +30,5 @@ const VidSrcPlayer = ({ show, setShow, videoId, setVideoId, mediaType }) => {
     </div>
   );
 };
+
+export default VidSrcPlayer;
