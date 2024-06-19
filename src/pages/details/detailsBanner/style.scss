@@ -123,10 +123,12 @@
 
             .circleRating {
                 max-width: 70px;
+                min-width: 45px;
                 background-color: var(--black2);
 
                 @include md {
                     max-width: 90px;
+                    min-width: 60px;
                 }
 
                 .CircularProgressbar-text {
@@ -149,8 +151,12 @@
                 }
 
                 .text {
-                    font-size: 20px;
+                    font-size: 15px;
                     transition: all 0.7s ease-in-out;
+
+                    @include md {
+                        font-size: 20px;
+                    }
                 }
 
                 .triangle {
@@ -190,8 +196,12 @@
             .row {
                 display: flex;
                 align-items: center;
-                gap: 25px;
+                gap: 15px;
                 margin-bottom: 25px;
+
+                @include md {
+                    gap: 25px;
+                }
             }
 
             .info {
