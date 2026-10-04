@@ -1,11 +1,8 @@
 import axios from "axios";
 
-const BASE_URL = "https://api.themoviedb.org/3";
-const TMBD_TOKEN = import.meta.env.VITE_APP_TMDB_TOKEN;
-
-const headers = {
-  Authorization: "Bearer " + TMBD_TOKEN,
-};
+// Same-origin proxy (api/tmdb/[...path].js on Vercel, Vite proxy in dev).
+// The TMDB token lives server-side in TMDB_TOKEN, never in the browser bundle.
+const BASE_URL = "/api/tmdb";
 
 const cache = {};
 
@@ -22,7 +19,7 @@ export const fetchDataFromApi = async (url, params) => {
   }
 
   try {
-    const { data } = await axios.get(BASE_URL + url, { headers, params });
+    const { data } = await axios.get(BASE_URL + url, { params });
 
     cache[cacheKey] = data;
 

@@ -23,14 +23,14 @@ const App = () => {
   }, []);
 
   const fetchApiConfig = () => {
-    fetchDataFromApi("/configuration").then((res) => {
-      const url = {
-        backdrop: res.images.secure_base_url + "original",
-        poster: res.images.secure_base_url + "original",
-        profile: res.images.secure_base_url + "original",
-      };
-      dispatch(getApiConfiguration(url));
-    });
+    // Images go through the same-origin /tmdb-img proxy (-> image.tmdb.org/t/p).
+    dispatch(
+      getApiConfiguration({
+        backdrop: "/tmdb-img/w1280",
+        poster: "/tmdb-img/w500",
+        profile: "/tmdb-img/w342",
+      })
+    );
   };
 
   const generesCall = async () => {
