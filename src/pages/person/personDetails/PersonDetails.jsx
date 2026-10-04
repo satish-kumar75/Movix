@@ -67,10 +67,11 @@ const PersonDetails = ({ data, loading, url, personId }) => {
                   ? url.profile + data.profile_path
                   : PosterFallback
               }
+              alt={data.name}
             />
           </div>
           <div className="right">
-            <p className="title">{data.name}</p>
+            <h1 className="title">{data.name}</h1>
             <div className="socialIcons">
               {social?.facebook_id && (
                 <a
@@ -104,7 +105,7 @@ const PersonDetails = ({ data, loading, url, personId }) => {
               )}
             </div>
             <div className="overview">
-              <div className="heading">Biography</div>
+              <h2 className="heading">Biography</h2>
               <p className="description">
                 {biography.split("\n").map((paragraph, index) => (
                   <React.Fragment key={index}>

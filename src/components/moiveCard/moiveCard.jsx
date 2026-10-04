@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import React from "react";
 import dayjs from "dayjs";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import "./style.scss";
@@ -12,17 +12,20 @@ import PosterFallback from "../../assets/no-poster.png";
 
 const MovieCard = ({ data, fromSearch, mediaType }) => {
   const { url } = useSelector((state) => state.home);
-  const navigate = useNavigate();
   const posterUrl = data.poster_path
     ? url.poster + data.poster_path
     : PosterFallback;
   return (
-    <div
+    <Link
       className="movieCard"
-      onClick={() => navigate(`/${data.media_type || mediaType}/${data.id}`)}
+      to={`/${data.media_type || mediaType}/${data.id}`}
     >
       <div className="posterBlock">
-        <Img className="posterImg" src={posterUrl} />
+        <Img
+          className="posterImg"
+          src={posterUrl}
+          alt={data.title || data.name}
+        />
         {!fromSearch && (
           <React.Fragment>
             <CircleRating rating={data.vote_average.toFixed(1)} />
@@ -36,7 +39,7 @@ const MovieCard = ({ data, fromSearch, mediaType }) => {
           {dayjs(data.release_date).format("MMM D, YYYY")}
         </span>
       </div>
-    </div>
+    </Link>
   );
 };
 

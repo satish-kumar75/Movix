@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import "./style.scss";
 import useFetch from "../../../hooks/useFetch";
@@ -16,7 +16,6 @@ const HeroBanner = () => {
   const sliderRef = useRef(null);
   const thumbnailBorderRef = useRef(null);
 
-  const navigate = useNavigate();
   const { url } = useSelector((state) => state.home);
 
   const { data, loading } = useFetch("/movie/upcoming");
@@ -64,7 +63,7 @@ const HeroBanner = () => {
             >
               <Img
                 src={url.backdrop + item.backdrop_path}
-                alt={`img${index + 1}`}
+                alt={item.name || item.title}
               />
               <div className="content">
                 <h1 className="title">
@@ -77,13 +76,10 @@ const HeroBanner = () => {
                 <div className="des">{item.overview}</div>
                 <div className="row">
                   <CircleRating rating={item.vote_average.toFixed(1)} />
-                  <div
-                    className="playbtn"
-                    onClick={() => navigate(`/movie/${item.id}`)}
-                  >
+                  <Link className="playbtn" to={`/movie/${item.id}`}>
                     <PlayIcon />
                     <span className="text">Watch Now</span>
-                  </div>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -98,7 +94,7 @@ const HeroBanner = () => {
             >
               <Img
                 src={url.poster + item.poster_path}
-                alt={`thumbnail${index + 1}`}
+                alt={`${item.title || item.name} poster`}
               />
             </div>
           ))}

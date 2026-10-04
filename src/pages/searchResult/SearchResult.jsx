@@ -7,6 +7,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import "./Search.scss";
 
 import { fetchDataFromApi } from "../../utils/api";
+import useSeo from "../../hooks/useSeo";
 import ContentWrapper from "../../components/contentWrapper/ContentWrapper";
 import MovieCard from "../../components/moiveCard/moiveCard";
 import Spinner from "../../components/spinner/Spinner";
@@ -17,6 +18,8 @@ const SearchResult = () => {
   const [pageNum, setPageNum] = useState(1);
   const [loading, setLoading] = useState(false);
   const { query } = useParams();
+
+  useSeo({ title: `Search results for '${query}' | Movix`, noindex: true });
 
   const fetchInitialData = () => {
     setLoading(true);
@@ -54,11 +57,11 @@ const SearchResult = () => {
         <ContentWrapper>
           {data?.results.length > 0 ? (
             <>
-              <div className="pageTitle">
+              <h1 className="pageTitle">
                 {`Search ${
                   data.total_results > 1 ? "results" : "result"
                 } of '${query}'`}
-              </div>
+              </h1>
               <InfiniteScroll
                 className="content"
                 dataLength={data?.results?.length || []}

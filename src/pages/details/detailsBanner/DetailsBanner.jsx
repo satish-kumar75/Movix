@@ -1,13 +1,13 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import dayjs from "dayjs";
 
 import "./style.scss";
 
 import useFetch from "../../../hooks/useFetch";
+import useSeo from "../../../hooks/useSeo";
 import Genres from "../../../components/genres/Geners.jsx";
 import ContentWrapper from "../../../components/contentWrapper/ContentWrapper";
 import CircleRating from "../../../components/circleRating/CircleRating";
@@ -17,13 +17,28 @@ import { PlayIcon } from "../PlayIcon.jsx";
 import VideoPopup from "../../../components/videoPopup/VideoPopup.jsx";
 import VidSrcPlayer from "../../../components/vidSrcPlayer/VidSrcPlayer.jsx";
 
-const DetailsBanner = ({ video, crew }) => {
+const DetailsBanner = ({ video, crew, mediaType, id }) => {
   const [show, setShow] = useState(false);
   const [videoId, setVideoId] = useState(null);
   const [isTrailer, setIsTrailer] = useState(true);
-  const { mediaType, id } = useParams();
   const { data, loading } = useFetch(`/${mediaType}/${id}`);
   const { url } = useSelector((state) => state.home);
+
+  const releaseDate = data?.release_date || data?.first_air_date;
+
+  useSeo({
+    title: data
+      ? `${data.title || data.name}${
+          releaseDate ? ` (${dayjs(releaseDate).format("YYYY")})` : ""
+        } | Movix`
+      : undefined,
+    description: data?.overview,
+    image:
+      url.backdrop && data?.backdrop_path
+        ? url.backdrop + data.backdrop_path
+        : undefined,
+    type: mediaType === "tv" ? "video.tv_show" : "video.movie",
+  });
 
   const _genres = data?.genres?.map((g) => g.id);
 
@@ -58,7 +73,7 @@ const DetailsBanner = ({ video, crew }) => {
           {!!data && (
             <React.Fragment>
               <div className="backdrop-img">
-                <Img src={url.backdrop + data.backdrop_path} />
+                <Img src={url.backdrop + data.backdrop_path} alt="" />
               </div>
               <div className="opacity-layer"></div>
               <ContentWrapper>
@@ -68,17 +83,22 @@ const DetailsBanner = ({ video, crew }) => {
                       <Img
                         className="posterImg"
                         src={url.poster + data.poster_path}
+                        alt={`${data.title || data.name} poster`}
                       />
                     ) : (
-                      <Img className="posterImg" src={PosterFallback} />
+                      <Img
+                        className="posterImg"
+                        src={PosterFallback}
+                        alt={`${data.title || data.name} poster`}
+                      />
                     )}
                   </div>
                   <div className="right">
-                    <div className="title">
-                      {`${data?.name || data.title} (${dayjs(
-                        data.release_date
-                      ).format("YYYY")})`}
-                    </div>
+                    <h1 className="title">
+                      {`${data?.name || data.title} (${dayjs(releaseDate).format(
+                        "YYYY"
+                      )})`}
+                    </h1>
                     <div className="subtitle">{data.tagline}</div>
                     <Genres data={_genres} />
                     <div className="row">
@@ -95,7 +115,7 @@ const DetailsBanner = ({ video, crew }) => {
                       </div>
                     </div>
                     <div className="overview">
-                      <div className="heading">Overview</div>
+                      <h2 className="heading">Overview</h2>
                       <div className="description">{data.overview}</div>
                     </div>
                     <div className="info">
@@ -105,11 +125,11 @@ const DetailsBanner = ({ video, crew }) => {
                           <span className="text">{data.status}</span>
                         </div>
                       )}
-                      {data.release_date && (
+                      {releaseDate && (
                         <div className="infoItem">
                           <span className="text bold">Release Date: </span>
                           <span className="text">
-                            {dayjs(data.release_date).format("MMM, D ,YYYY")}
+                            {dayjs(releaseDate).format("MMM, D ,YYYY")}
                           </span>
                         </div>
                       )}

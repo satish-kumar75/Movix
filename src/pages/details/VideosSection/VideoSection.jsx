@@ -25,7 +25,7 @@ const VideosSection = ({ data, loading }) => {
   return (
     <div className="videosSection">
       <ContentWrapper>
-        <div className="sectionHeading">Official Videos</div>
+        <h2 className="sectionHeading">Official Videos</h2>
         {!loading ? (
           <div className="videos">
             {data?.results?.map((item) => (
@@ -40,6 +40,7 @@ const VideosSection = ({ data, loading }) => {
                 <div className="videoThumbnail">
                   <Img
                     src={`https://img.youtube.com/vi/${item.key}/mqdefault.jpg`}
+                    alt={item.name}
                   />
                   <PlayIcon />
                 </div>

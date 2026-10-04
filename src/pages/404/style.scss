@@ -1,0 +1,31 @@
+.pageNotFound {
+    min-height: 700px;
+    padding-top: 200px;
+    text-align: center;
+    color: white;
+
+    .title {
+        font-size: 96px;
+        font-weight: 700;
+        line-height: 1.1;
+        margin-bottom: 15px;
+        background: var(--gradient);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .text {
+        font-size: 20px;
+        margin-bottom: 30px;
+        opacity: 0.7;
+    }
+
+    .homeLink {
+        display: inline-block;
+        padding: 12px 28px;
+        border-radius: 30px;
+        font-weight: 600;
+        background: var(--gradient);
+    }
+}

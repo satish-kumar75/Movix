@@ -7,11 +7,10 @@ import "./style.scss";
 import ContentWrapper from "../../../components/contentWrapper/ContentWrapper";
 import Img from "../../../components/lazyLoadImage/Img";
 import avatar from "../../../assets/avatar.png";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Cast = ({ data, loading }) => {
   const { url } = useSelector((state) => state.home);
-  const navigate = useNavigate();
 
   const skeleton = (index) => {
     return (
@@ -25,7 +24,7 @@ const Cast = ({ data, loading }) => {
   return (
     <div className="castSection">
       <ContentWrapper>
-        <div className="sectionHeading">Top Cast</div>
+        <h2 className="sectionHeading">Top Cast</h2>
         {!loading ? (
           <div className="listItems">
             {data?.map((item) => {
@@ -33,19 +32,17 @@ const Cast = ({ data, loading }) => {
                 ? url.profile + item.profile_path
                 : avatar;
               return (
-                <div
+                <Link
                   className="listItem"
                   key={item.id}
-                  onClick={() => {
-                    navigate(`/person/${item.id}`);
-                  }}
+                  to={`/person/${item.id}`}
                 >
                   <div className="profileImg">
-                    <Img src={imgUrl} />
+                    <Img src={imgUrl} alt={item.name} />
                   </div>
                   <div className="name">{item.name}</div>
                   <div className="character">{item.character}</div>
-                </div>
+                </Link>
               );
             })}
           </div>

@@ -1,6 +1,3 @@
-// Vercel serverless proxy: /api/tmdb/<anything> -> https://api.themoviedb.org/3/<anything>
-// (vercel.json rewrites /api/tmdb/:path* to /api/tmdb?path=:path*).
-// Runs on Vercel's network, so it works even where TMDB is blocked for the visitor.
 export default async function handler(req, res) {
   const { path, ...query } = req.query;
   const search = new URLSearchParams(query).toString();

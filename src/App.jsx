@@ -23,7 +23,6 @@ const App = () => {
   }, []);
 
   const fetchApiConfig = () => {
-    // Images go through the same-origin /tmdb-img proxy (-> image.tmdb.org/t/p).
     dispatch(
       getApiConfiguration({
         backdrop: "/tmdb-img/w1280",
@@ -54,7 +53,8 @@ const App = () => {
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/:mediaType/:id" element={<Details />} />
+        <Route path="/movie/:id" element={<Details />} />
+        <Route path="/tv/:id" element={<Details />} />
         <Route path="/search/:query" element={<SearchResult />} />
         <Route path="/explore/:mediaType" element={<Explore />} />
         <Route path="/person/:personId" element={<Person />} />

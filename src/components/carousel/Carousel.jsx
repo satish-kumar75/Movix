@@ -5,7 +5,7 @@ import {
   BsFillArrowLeftCircleFill,
   BsFillArrowRightCircleFill,
 } from "react-icons/bs";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import dayjs from "dayjs";
 
@@ -20,7 +20,6 @@ import Geners from "../genres/Geners";
 const Carousel = ({ data, loading, endPoint, title }) => {
   const carouselContainer = useRef();
   const { url } = useSelector((state) => state.home);
-  const navigate = useNavigate();
   const navigation = (dir) => {
     const container = carouselContainer.current;
     const scrollAmount =
@@ -49,7 +48,7 @@ const Carousel = ({ data, loading, endPoint, title }) => {
   return (
     <div className="carousel">
       <ContentWrapper>
-        {title && <div className="carouselTitle">{title}</div>}
+        {title && <h2 className="carouselTitle">{title}</h2>}
         <BsFillArrowLeftCircleFill
           className="carouselLeftNav arrow"
           onClick={() => navigation("left")}
@@ -65,15 +64,13 @@ const Carousel = ({ data, loading, endPoint, title }) => {
                 ? url.poster + item.poster_path
                 : PosterFallback;
               return (
-                <div
+                <Link
                   key={item.id}
                   className="carouselItem"
-                  onClick={() =>
-                    navigate(`/${item.media_type || endPoint}/${item.id}`)
-                  }
+                  to={`/${item.media_type || endPoint}/${item.id}`}
                 >
                   <div className="posterBlock">
-                    <Img src={posterUrl} />
+                    <Img src={posterUrl} alt={item.title || item.name} />
                     <CircleRating rating={item.vote_average.toFixed(1)} />
                     <Geners data={item.genre_ids.slice(0, 3)} />
                   </div>
@@ -85,7 +82,7 @@ const Carousel = ({ data, loading, endPoint, title }) => {
                         : "Not Released"}
                     </span>
                   </div>
-                </div>
+                </Link>
               );
             })}
           </div>

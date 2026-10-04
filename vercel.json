@@ -2,6 +2,22 @@
   "rewrites": [
     { "source": "/api/tmdb/:path*", "destination": "/api/tmdb?path=:path*" },
     { "source": "/tmdb-img/:path*", "destination": "https://image.tmdb.org/t/p/:path*" },
-    { "source": "/((?!api/|tmdb-img/).*)", "destination": "/" }
+    { "source": "/sitemap.xml", "destination": "/api/sitemap" },
+    { "source": "/:mediaType(movie|tv)/:id([0-9]+)", "destination": "/api/page?mediaType=:mediaType&id=:id" },
+    { "source": "/((?!api/|tmdb-img/|.*\\.).*)", "destination": "/" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" }
+      ]
+    },
+    {
+      "source": "/tmdb-img/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+    }
   ]
 }

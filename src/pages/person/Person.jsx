@@ -5,6 +5,7 @@ import Recommendations from "./carousels/Recommendations";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import useFetch from "../../hooks/useFetch";
+import useSeo from "../../hooks/useSeo";
 import SimilarMovies from "./carousels/SimilarMovies";
 
 const Person = () => {
@@ -15,6 +16,19 @@ const Person = () => {
   const { data: movie, loading: movieLoading } = useFetch(
     `/person/${personId}/movie_credits`
   );
+
+  useSeo({
+    title: data?.name
+      ? `${data.name} - Biography & Filmography | Movix`
+      : undefined,
+    description: data?.biography,
+    image:
+      url.profile && data?.profile_path
+        ? url.profile + data.profile_path
+        : undefined,
+    type: "profile",
+  });
+
   return (
     <div>
       <PersonDetails data={data} loading={loading} url={url} personId={personId} />

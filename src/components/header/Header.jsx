@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
 import { SlMenu } from "react-icons/sl";
 import { VscChromeClose } from "react-icons/vsc";
-import { useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 import "./Header.scss";
 
@@ -61,27 +61,22 @@ const Header = () => {
     }
   };
 
-  const navigationHandler = (type) => {
-    if (type === "movie") {
-      navigate("/explore/movie");
-    } else {
-      navigate("/explore/tv");
-    }
-    setMobileMenu(false);
-  };
-
   return (
     <header className={`header ${mobileMenu ? "mobileView" : ""} ${show}`}>
       <ContentWrapper>
-        <div className="logo" onClick={() => navigate("/")}>
-          <img src={logo} alt="movix logo" />
-        </div>
+        <Link className="logo" to="/" onClick={() => setMobileMenu(false)}>
+          <img src={logo} alt="Movix" />
+        </Link>
         <ul className="menuItems">
-          <li className="menuItem" onClick={() => navigationHandler("movie")}>
-            Movies
+          <li className="menuItem">
+            <Link to="/explore/movie" onClick={() => setMobileMenu(false)}>
+              Movies
+            </Link>
           </li>
-          <li className="menuItem" onClick={() => navigationHandler("tv")}>
-            TV Shows
+          <li className="menuItem">
+            <Link to="/explore/tv" onClick={() => setMobileMenu(false)}>
+              TV Shows
+            </Link>
           </li>
           <li className="menuItem">
             <HiOutlineSearch onClick={openSearch} />

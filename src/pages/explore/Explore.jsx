@@ -8,6 +8,7 @@ import Select from "react-select";
 import "./Explore.scss";
 
 import useFetch from "../../hooks/useFetch";
+import useSeo from "../../hooks/useSeo";
 import { fetchDataFromApi } from "../../utils/api";
 import ContentWrapper from "../../components/contentWrapper/ContentWrapper";
 import MovieCard from "../../components/moiveCard/moiveCard";
@@ -24,6 +25,18 @@ const Explore = () => {
   const { mediaType } = useParams();
 
   const { data: genresData } = useFetch(`/genre/${mediaType}/list`);
+
+  useSeo({
+    title:
+      mediaType === "tv"
+        ? "Explore TV Shows - Filter by Genre & Rating | Movix"
+        : "Explore Movies - Filter by Genre & Rating | Movix",
+    description:
+      mediaType === "tv"
+        ? "Explore TV shows by genre, rating and release date. Find popular series, cast details and trailers on Movix."
+        : "Explore movies by genre, rating and release date. Find popular films, cast details and trailers on Movix.",
+    noindex: mediaType !== "movie" && mediaType !== "tv",
+  });
 
   const sortbyData = useMemo(
     () => [
@@ -101,9 +114,9 @@ const Explore = () => {
     <div className="explorePage">
       <ContentWrapper>
         <div className="pageHeader">
-          <div className="pageTitle">
+          <h1 className="pageTitle">
             {mediaType === "tv" ? "Explore TV Shows" : "Explore Movies"}
-          </div>
+          </h1>
           <div className="filters">
             <Select
               isMulti
