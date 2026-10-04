@@ -206,9 +206,9 @@
 
             .linkRow {
                 display: flex;
-                flex-wrap: wrap;
                 gap: 10px;
-                margin-bottom: 25px;
+                margin-bottom: 22px;
+                @include scrollRow;
 
                 .pill {
                     display: inline-flex;

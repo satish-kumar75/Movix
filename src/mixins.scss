@@ -35,3 +35,26 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+@mixin scrollRow {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    margin-right: -20px;
+    margin-left: -20px;
+    padding: 3px 20px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+
+    & > * {
+        flex-shrink: 0;
+        white-space: nowrap;
+    }
+
+    @include md {
+        flex-wrap: wrap;
+        overflow: visible;
+        margin-right: 0;
+        margin-left: 0;
+        padding: 0;
+    }
+}

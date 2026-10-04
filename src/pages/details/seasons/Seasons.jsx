@@ -11,6 +11,8 @@ import useFetch from "../../../hooks/useFetch";
 
 const INITIAL_EPISODES = 8;
 
+const keepTogether = (value) => value.replace(/ /g, " ");
+
 const Seasons = ({ id }) => {
   const { url } = useSelector((state) => state.home);
   const [selected, setSelected] = useState(null);
@@ -98,13 +100,13 @@ const Seasons = ({ id }) => {
                   <p className="meta">
                     {[
                       episode.air_date &&
-                        dayjs(episode.air_date).format("MMM D, YYYY"),
-                      episode.runtime && `${episode.runtime} min`,
+                        keepTogether(dayjs(episode.air_date).format("MMM D, YYYY")),
+                      episode.runtime && keepTogether(`${episode.runtime} min`),
                       episode.vote_count > 0 &&
-                        `${episode.vote_average.toFixed(1)} / 10`,
+                        keepTogether(`${episode.vote_average.toFixed(1)} / 10`),
                     ]
                       .filter(Boolean)
-                      .join("  ·  ")}
+                      .join(" · ")}
                   </p>
                   {episode.overview && (
                     <p className="overview">{episode.overview}</p>

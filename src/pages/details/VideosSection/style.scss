@@ -12,9 +12,9 @@
 
     .languageChips {
         display: flex;
-        flex-wrap: wrap;
         gap: 8px;
-        margin-bottom: 20px;
+        margin-bottom: 17px;
+        @include scrollRow;
 
         .chip {
             padding: 7px 16px;
