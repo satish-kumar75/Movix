@@ -7,19 +7,32 @@ const useFetch = (url, params) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    setLoading("loading...");
     setData(null);
     setError(null);
 
+    if (!url) {
+      setLoading(false);
+      return;
+    }
+
+    let active = true;
+    setLoading("loading...");
+
     fetchDataFromApi(url, params)
       .then((res) => {
+        if (!active) return;
         setLoading(false);
         setData(res);
       })
       .catch((err) => {
+        if (!active) return;
         setLoading(false);
         setError("Something went wrong!");
       });
+
+    return () => {
+      active = false;
+    };
   }, [url, params]);
 
   return { data, loading, error };

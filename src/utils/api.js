@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const BASE_URL = "/api/tmdb";
+const ARCHIVE_URL = "/api/archive";
 
 const cache = {};
 
@@ -17,7 +18,10 @@ export const fetchDataFromApi = async (url, params) => {
   }
 
   try {
-    const { data } = await axios.get(BASE_URL + url, { params });
+    const target = url.startsWith("/archive")
+      ? ARCHIVE_URL + url.slice("/archive".length)
+      : BASE_URL + url;
+    const { data } = await axios.get(target, { params });
 
     cache[cacheKey] = data;
 

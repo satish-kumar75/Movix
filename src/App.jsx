@@ -14,6 +14,7 @@ import PageNotFound from "./pages/404/PageNotFound";
 import Person from "./pages/person/Person";
 import About from "./pages/about/About";
 import Privacy from "./pages/privacy/Privacy";
+import MyList from "./pages/myList/MyList";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -30,6 +31,8 @@ const App = () => {
         backdrop: "/tmdb-img/w1280",
         poster: "/tmdb-img/w500",
         profile: "/tmdb-img/w342",
+        still: "/tmdb-img/w300",
+        logo: "/tmdb-img/w92",
       })
     );
   };
@@ -60,6 +63,7 @@ const App = () => {
         <Route path="/search/:query" element={<SearchResult />} />
         <Route path="/explore/:mediaType" element={<Explore />} />
         <Route path="/person/:personId" element={<Person />} />
+        <Route path="/my-list" element={<MyList />} />
         <Route path="/about" element={<About />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="*" element={<PageNotFound />} />

@@ -13,6 +13,31 @@ import { fetchDataFromApi } from "../../utils/api";
 import ContentWrapper from "../../components/contentWrapper/ContentWrapper";
 import MovieCard from "../../components/moiveCard/moiveCard";
 import Spinner from "../../components/spinner/Spinner";
+import { languageName } from "../../utils/region";
+
+const LANGUAGE_CODES = [
+  "hi",
+  "ta",
+  "te",
+  "ml",
+  "kn",
+  "bn",
+  "mr",
+  "pa",
+  "en",
+  "ko",
+  "ja",
+  "zh",
+  "es",
+  "fr",
+  "de",
+  "it",
+  "pt",
+  "ru",
+  "tr",
+  "th",
+  "ar",
+];
 
 let filters = {};
 
@@ -22,6 +47,7 @@ const Explore = () => {
   const [loading, setLoading] = useState(false);
   const [genre, setGenre] = useState(null);
   const [sortby, setSortby] = useState(null);
+  const [language, setLanguage] = useState(null);
   const { mediaType } = useParams();
 
   const { data: genresData } = useFetch(`/genre/${mediaType}/list`);
@@ -48,6 +74,12 @@ const Explore = () => {
       { value: "primary_release_date.asc", label: "Release Date Ascending" },
       { value: "original_title.asc", label: "Title (A-Z)" },
     ],
+    []
+  );
+
+  const languageData = useMemo(
+    () =>
+      LANGUAGE_CODES.map((code) => ({ value: code, label: languageName(code) })),
     []
   );
 
@@ -82,6 +114,7 @@ const Explore = () => {
     setPageNum(1);
     setSortby(null);
     setGenre(null);
+    setLanguage(null);
     fetchInitialData();
   }, [mediaType]);
 
@@ -89,9 +122,23 @@ const Explore = () => {
     if (action.name === "sortby") {
       setSortby(selectedItems);
       if (action.action !== "clear") {
-        filters.sort_by = selectedItems.value;
+        filters.sort_by =
+          mediaType === "tv"
+            ? selectedItems.value
+                .replace("primary_release_date", "first_air_date")
+                .replace("original_title", "original_name")
+            : selectedItems.value;
       } else {
         delete filters.sort_by;
+      }
+    }
+
+    if (action.name === "language") {
+      setLanguage(selectedItems);
+      if (action.action !== "clear") {
+        filters.with_original_language = selectedItems.value;
+      } else {
+        delete filters.with_original_language;
       }
     }
 
@@ -136,6 +183,16 @@ const Explore = () => {
               onChange={onChange}
               placeholder="Select genres"
               className="react-select-container genresDD"
+              classNamePrefix="react-select"
+            />
+            <Select
+              name="language"
+              value={language}
+              options={languageData}
+              onChange={onChange}
+              isClearable={true}
+              placeholder="Language"
+              className="react-select-container languageDD"
               classNamePrefix="react-select"
             />
             <Select

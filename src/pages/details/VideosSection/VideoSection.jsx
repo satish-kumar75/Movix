@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 
 import "./style.scss";
 
@@ -7,10 +7,35 @@ import ContentWrapper from "../../../components/contentWrapper/ContentWrapper";
 import { PlayIcon } from "../PlayIcon";
 import VideoPopup from "../../../components/videoPopup/VideoPopup";
 import Img from "../../../components/lazyLoadImage/Img";
+import useFetch from "../../../hooks/useFetch";
+import { languageName } from "../../../utils/region";
 
-const VideosSection = ({ data, loading }) => {
+const VIDEO_LANGUAGES =
+  "en,hi,ta,te,ml,kn,bn,mr,pa,gu,ur,ko,ja,zh,es,fr,de,it,pt,ru,tr,th,id,ar,null";
+
+const VideosSection = ({ mediaType, id }) => {
   const [show, setShow] = useState(false);
   const [videoId, setVideoId] = useState(null);
+  const [language, setLanguage] = useState("all");
+
+  const { data, loading } = useFetch(
+    `/${mediaType}/${id}/videos?include_video_language=${VIDEO_LANGUAGES}`
+  );
+
+  const videos = useMemo(
+    () => (Array.isArray(data?.results) ? data.results : []),
+    [data]
+  );
+
+  const languages = useMemo(
+    () => [...new Set(videos.map((video) => video.iso_639_1).filter(Boolean))],
+    [videos]
+  );
+
+  const visible =
+    language === "all"
+      ? videos
+      : videos.filter((video) => video.iso_639_1 === language);
 
   const loadingSkeleton = (index) => {
     return (
@@ -22,15 +47,30 @@ const VideosSection = ({ data, loading }) => {
     );
   };
 
-  if (!loading && !data?.results?.length) return null;
+  if (!loading && videos.length === 0) return null;
 
   return (
     <div className="videosSection">
       <ContentWrapper>
         <h2 className="sectionHeading">Official Videos</h2>
+        {languages.length > 1 && (
+          <div className="languageChips" role="group" aria-label="Video language">
+            {["all", ...languages].map((code) => (
+              <button
+                type="button"
+                key={code}
+                className={`chip ${language === code ? "active" : ""}`}
+                aria-pressed={language === code}
+                onClick={() => setLanguage(code)}
+              >
+                {code === "all" ? "All" : languageName(code)}
+              </button>
+            ))}
+          </div>
+        )}
         {!loading ? (
           <div className="videos">
-            {data?.results?.map((item) => (
+            {visible.map((item) => (
               <div
                 key={item.id}
                 className="videoItem"

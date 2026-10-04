@@ -1,0 +1,77 @@
+@import "../../mixins.scss";
+
+.myListPage {
+    min-height: 700px;
+    padding-top: 100px;
+
+    .pageHeader {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-bottom: 25px;
+    }
+
+    .pageIntro {
+        max-width: 520px;
+
+        .pageTitle {
+            font-size: 24px;
+            line-height: 34px;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .pageText {
+            font-size: 14px;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.6);
+        }
+    }
+
+    .clear {
+        padding: 9px 18px;
+        border: 0;
+        border-radius: 20px;
+        font: inherit;
+        font-size: 14px;
+        font-weight: 600;
+        color: white;
+        background-color: var(--black-light);
+        cursor: pointer;
+        transition: background-color ease 0.3s;
+
+        &:hover {
+            background-color: var(--black-lighter);
+        }
+    }
+
+    .content {
+        display: flex;
+        flex-flow: row wrap;
+        gap: 10px;
+        margin-bottom: 50px;
+
+        @include md {
+            gap: 20px;
+        }
+    }
+
+    .empty {
+        font-size: 18px;
+        line-height: 1.6;
+        max-width: 56ch;
+        color: rgba(255, 255, 255, 0.7);
+
+        a {
+            color: var(--orange);
+            text-decoration: underline;
+            text-underline-offset: 3px;
+
+            &:hover {
+                color: var(--pink);
+            }
+        }
+    }
+}

@@ -25,8 +25,16 @@ const services = [
     text: "Titles, images and ratings come from TMDB, and its policy covers the data it holds.",
   },
   {
-    name: "Social links",
-    text: "Links on a person's page open that person's profiles on other sites.",
+    name: "JustWatch",
+    text: "Streaming, rent and buy availability comes from JustWatch through TMDB, and the provider logos are served by TMDB. Clicking a logo opens a TMDB page.",
+  },
+  {
+    name: "Internet Archive",
+    text: "For a few public-domain classics, Download and Watch free buttons open archive.org, which has its own privacy policy.",
+  },
+  {
+    name: "Social and reference links",
+    text: "Links to IMDb, Letterboxd, TMDB and a person's social profiles open those sites in a new tab.",
   },
 ];
 
@@ -125,9 +133,15 @@ const Privacy = () => {
               <h2>Cookies and storage</h2>
               <div className="body">
                 <p>
-                  Movix itself doesn&apos;t set cookies or use your
-                  browser&apos;s storage to track you. YouTube and the embedded
-                  player may set their own when you play a video.
+                  Movix itself doesn&apos;t set cookies or track you. It saves
+                  two things in your browser&apos;s local storage, on your own
+                  device: your My List, and the country you pick for watch
+                  availability. Neither is sent anywhere, and you can remove
+                  them any time by clearing the site&apos;s data.
+                </p>
+                <p>
+                  YouTube and the embedded player may set their own cookies when
+                  you play a video.
                 </p>
               </div>
             </section>

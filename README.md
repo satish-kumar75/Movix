@@ -48,6 +48,12 @@ I developed a stunning, fully responsive movie website using the TMDB API and Re
 
 👉 **Global State Management with Redux**: Efficient state management across the entire application.
 
+👉 **Where to Watch**: Provider logos under the rating row show where a title streams, rents or sells in the visitor's country, with a country picker and a free legal download for public-domain classics from the Internet Archive.
+
+👉 **Languages and Seasons**: Language and age rating on each title, trailers filtered by language, an Explore filter for Hindi, Tamil, Telugu and more, and a season and episode browser for TV shows.
+
+👉 **My List**: Save titles for later, stored only in the visitor's browser.
+
 👉 **Works on Blocked Networks**: TMDB data and images are served through a same-origin proxy on Vercel, so the site loads even where TMDB is blocked and the API token never reaches the browser.
 
 👉 **Search-Friendly**: Per-page titles, descriptions and Open Graph tags, server-rendered metadata and Movie/TVSeries structured data for title pages, a dynamic sitemap and `robots.txt`.

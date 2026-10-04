@@ -4,6 +4,7 @@ import { HiOutlineSearch } from "react-icons/hi";
 import { SlMenu } from "react-icons/sl";
 import { VscChromeClose } from "react-icons/vsc";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 import "./Header.scss";
 
@@ -18,6 +19,7 @@ const Header = () => {
   const [showSearch, setShowSearch] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
+  const listCount = useSelector((state) => state.list.items.length);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -76,6 +78,12 @@ const Header = () => {
           <li className="menuItem">
             <Link to="/explore/tv" onClick={() => setMobileMenu(false)}>
               TV Shows
+            </Link>
+          </li>
+          <li className="menuItem">
+            <Link to="/my-list" onClick={() => setMobileMenu(false)}>
+              My List
+              {listCount > 0 && <span className="count">{listCount}</span>}
             </Link>
           </li>
           <li className="menuItem">

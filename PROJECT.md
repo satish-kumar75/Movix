@@ -52,6 +52,12 @@ There is no login, backend database or user data. Everything is read live from T
 | **Person page**: photo, biography with read more, birth data, aliases, social links, acting and production credits | `pages/person` |
 | **Explore** movies or TV with genre multi-select, sorting and infinite scroll | `pages/explore` |
 | **Search** across movies and TV with infinite scroll | `pages/searchResult` |
+| **Where to Watch** strip under the rating row: provider logos for Stream, Free, Free with ads, Rent and Buy, a country picker (auto-detected, remembered) and JustWatch credit | `components/whereToWatch` |
+| **Free legal download** (Download and Watch free) for public-domain classics, from the Internet Archive's curated collection | `api/archive.js`, `components/whereToWatch` |
+| **Languages:** language and age rating on the details page, trailers filterable by language, and an original-language filter on Explore | `pages/details`, `pages/explore` |
+| **My List:** bookmark button, `/my-list` page and a header badge, saved in the browser | `store/listSlice.js`, `pages/myList` |
+| **TV seasons and episodes** with stills, air dates, runtimes and ratings | `pages/details/seasons` |
+| **IMDb, Letterboxd and TMDB links**, and a "More from <collection>" carousel | `pages/details` |
 | **About** and **Privacy** pages | `pages/about`, `pages/privacy` |
 | Animated **404** page with a trending row; invalid movie, TV and person ids show it too | `pages/404` |
 
@@ -124,6 +130,7 @@ npm run lint      # ESLint
 Movix/
 ├── api/                        # Vercel serverless functions
 │   ├── tmdb.js                 # TMDB proxy (GET only, path allowlist)
+│   ├── archive.js              # Internet Archive lookup (curated public-domain collection only)
 │   ├── page.js                 # Per-title head tags + JSON-LD for /movie/:id and /tv/:id
 │   └── sitemap.js              # Dynamic /sitemap.xml
 ├── public/
@@ -141,11 +148,15 @@ Movix/
     ├── hooks/
     │   ├── useFetch.jsx        # { data, loading, error }
     │   └── useSeo.jsx          # Title, description, canonical, Open Graph, robots per page
-    ├── utils/api.js            # Axios client for /api/tmdb with an in-memory cache
-    ├── store/                  # Redux store and the "home" slice
+    ├── utils/
+    │   ├── api.js              # Axios client for /api/tmdb and /api/archive with an in-memory cache
+    │   └── region.js           # Country detection and saving, region and language display names
+    ├── store/                  # Redux store; "home" slice and "list" slice (My List, persisted)
     ├── components/             # carousel, circleRating, contentWrapper, footer, genres, header,
-    │                           # lazyLoadImage, moiveCard, spinner, switchTabs, videoPopup, vidSrcPlayer
-    └── pages/                  # home, details, person, explore, searchResult, about, privacy, 404
+    │                           # lazyLoadImage, moiveCard, spinner, switchTabs, videoPopup, vidSrcPlayer,
+    │                           # whereToWatch
+    └── pages/                  # home, details (cast, seasons, VideosSection, carousels), person,
+                                # explore, searchResult, myList, about, privacy, 404
 ```
 
 ---
@@ -181,6 +192,7 @@ The browser only ever talks to Movix's own domain for TMDB data and images. This
 | `/search/:query` | `SearchResult` | `noindex` |
 | `/explore/:mediaType` | `Explore` | `movie` or `tv` |
 | `/person/:personId` | `Person` | A TMDB 404 renders `PageNotFound` |
+| `/my-list` | `MyList` | Saved titles from local storage; `noindex` |
 | `/about`, `/privacy` | `About`, `Privacy` | Static content |
 | `*` | `PageNotFound` | `noindex` |
 
@@ -197,8 +209,9 @@ The browser only ever talks to Movix's own domain for TMDB data and images. This
 ### 8.2 `api/tmdb.js`
 
 - Accepts `GET` only (`405` otherwise).
-- Forwards only paths matching `^(movie|tv|person|search|discover|trending|genre)(/[A-Za-z0-9_]+)*$`, which blocks traversal such as `movie/../../account` and any account endpoint.
+- Forwards only paths matching `^(movie|tv|person|search|discover|trending|genre|collection|watch)(/[A-Za-z0-9_]+)*$`, which blocks traversal such as `movie/../../account` and any account endpoint.
 - Adds `Authorization: Bearer <VITE_APP_TMDB_TOKEN>` server-side and forwards query parameters.
+- Retries once on a network error or a TMDB 5xx response, then returns `502` if TMDB is still unreachable.
 - Caches successful responses at the edge for an hour (`s-maxage=3600`, `stale-while-revalidate`), and sets `no-store` on errors.
 
 ### 8.3 Endpoints used
@@ -209,14 +222,26 @@ The browser only ever talks to Movix's own domain for TMDB data and images. This
 | `/movie/upcoming` | `HeroBanner` |
 | `/trending/all/{day\|week}` | `Trending`, `About`, `PageNotFound` |
 | `/{movie\|tv}/popular`, `/{movie\|tv}/top_rated` | Home rails |
-| `/{movie\|tv}/{id}`, `/videos`, `/credits`, `/similar`, `/recommendations` | Details |
+| `/{movie\|tv}/{id}`, `/credits`, `/similar`, `/recommendations` | Details |
+| `/{movie\|tv}/{id}/videos` (default, and with `include_video_language=...`) | Details, `VideosSection` |
+| `/{movie\|tv}/{id}/watch/providers` | `WhereToWatch` |
+| `/movie/{id}/release_dates`, `/tv/{id}/content_ratings` | Age rating on the details page |
+| `/tv/{id}/external_ids` | IMDb link for TV |
+| `/tv/{id}/season/{n}` | `Seasons` |
+| `/collection/{id}` | `Collection` carousel |
 | `/discover/{movie\|tv}` | `Explore` |
 | `/search/multi` | `SearchResult` |
 | `/person/{id}`, `/movie_credits`, `/external_ids` | Person |
 
+### 8.3a Internet Archive lookup (`api/archive.js`)
+
+`GET /api/archive?title=&original=&year=` searches the Internet Archive for an item in its **curated `feature_films` collection** with the same year and a title that starts with the movie's title (or original title). It returns `{ identifier }` or `{}`. The client only asks for movies released in 1995 or earlier.
+
+Why only the curated collection: the Archive's user-upload areas contain copyrighted films, some wrongly tagged as public domain or CC0, so license tags are not trusted. Tested: Night of the Living Dead (1968) and Nosferatu (1922) match; Fight Club (1999), Charade and TV shows return nothing.
+
 ### 8.4 Images
 
-`/tmdb-img/:path*` is rewritten to `https://image.tmdb.org/t/p/:path*` and served with `Cache-Control: public, max-age=31536000, immutable`. Sizes are `w1280` (backdrops), `w500` (posters), `w342` (profiles) and `w780` (social images).
+`/tmdb-img/:path*` is rewritten to `https://image.tmdb.org/t/p/:path*` and served with `Cache-Control: public, max-age=31536000, immutable`. Sizes are `w1280` (backdrops), `w500` (posters), `w342` (profiles), `w300` (episode stills), `w92` (provider logos) and `w780` (social images).
 
 ### 8.5 Other network calls
 
@@ -226,7 +251,12 @@ YouTube (`react-player`, plus thumbnails from `img.youtube.com`), the embedded p
 
 ## 9. State management
 
-One slice, `home`, in `src/store/homeSlice.js`: `url` (`{ backdrop, poster, profile }`, set by `getApiConfiguration`) and `genres` (id → genre, set by `getGenres`). Everything else is local component state.
+Two slices:
+
+- `home` (`src/store/homeSlice.js`): `url` (`{ backdrop, poster, profile, still, logo }`, set by `getApiConfiguration`) and `genres` (id → genre).
+- `list` (`src/store/listSlice.js`): `items`, the My List entries (`id`, `media_type`, title or name, poster, vote average, genre ids, release date). It loads from `localStorage` (`movix-list`) at startup, and `store.js` writes it back when it changes.
+
+The chosen watch country is kept in `localStorage` (`movix-region`) by `utils/region.js`. Everything else is local component state.
 
 ---
 
@@ -234,11 +264,21 @@ One slice, `home`, in `src/store/homeSlice.js`: `url` (`{ backdrop, poster, prof
 
 **Home:** `HeroBanner` (the active slide's title is the page `<h1>`, the others are `<h2>`), then three carousel sections with `SwitchTabs`.
 
-**Details:** `DetailsBanner` (sets the page title, description and image through `useSeo`; the trailer button only appears when TMDB has a video), `Cast`, `VideosSection`, `SimilarMovies`, `Recommendations`. Empty cast and video sections are hidden.
+**Details:** `DetailsBanner` (sets the page title, description and image through `useSeo`; the trailer button only appears when TMDB has a video), then in this order: `Cast`, `Seasons` (TV only), `VideosSection`, `Collection` (movies in a collection), `SimilarMovies`, `Recommendations`. Empty sections are hidden, and a TMDB "not found" response shows the 404 page.
+
+Directly under the rating and trailer buttons, `DetailsBanner` renders **Where to Watch** and a row of pills (Add to My List, IMDb, Letterboxd for movies, TMDB). The info list adds **Language** (spoken languages) and **Rated** (age rating for the visitor's country, falling back to the US).
+
+**Where to Watch (`components/whereToWatch`):** reads `/watch/providers`, lists the countries TMDB has data for in a picker, and starts from the saved country, then the browser language region, then US. Logos link to TMDB's watch page for that country (TMDB does not expose per-provider deep links). It shows a skeleton while loading, nothing if there is no data at all, and a short note if the title is not listed in the chosen country. JustWatch is credited.
+
+**VideosSection:** requests videos in 25 languages and shows language chips (All, English, Tamil, ...) when more than one language exists.
+
+**Seasons:** season chips (including Specials), the first 8 episodes of the chosen season with a "Show all" toggle, and lazy-loaded episode stills.
 
 **Person:** `PersonDetails` and two credit carousels, with page metadata from the person's name and biography.
 
-**Explore:** an intro sentence, genre and sort selects, infinite scroll, and a helpful empty state.
+**Explore:** an intro sentence, genre, language and sort selects, infinite scroll, and a helpful empty state. The language filter maps to TMDB's `with_original_language`. For TV, release-date and title sorts are translated to `first_air_date` and `original_name`.
+
+**My List:** the saved grid (reusing `MovieCard`), a count, "Clear list", an empty state with links, and a `noindex` tag. The header shows a count badge.
 
 **Search:** `noindex` results with a helpful empty state and links to browse instead. The query is URL-encoded and sent as a request parameter, and a new search always starts at page 1.
 
@@ -294,7 +334,8 @@ Movix does not host any video. The embedded service is third-party; the site own
 | CSP | `default-src 'self'`; scripts from self and YouTube; styles self plus inline (react-select needs it); images from self, `data:`, `blob:` and YouTube image hosts; `connect-src 'self'`; `frame-src https:`; `object-src 'none'`; `base-uri`, `form-action` and `frame-ancestors` restricted; `upgrade-insecure-requests` |
 | Dependencies | `npm audit fix` applied; 5 advisories remain and need major upgrades (see below) |
 | Output escaping | HTML attributes and JSON-LD escaped in `api/page.js`; React escapes everything else |
-| Privacy | No analytics, accounts or tracking by Movix. The proxy means TMDB sees the server, not the visitor. |
+| Privacy | No analytics, accounts or tracking by Movix. The proxy means TMDB sees the server, not the visitor. Only two things are saved, on the visitor's own device: My List and the chosen country. |
+| Legal sources only | Availability comes from JustWatch through TMDB; free downloads come only from the Internet Archive's curated collection. No scraped or third-party download links. |
 
 **Rotate the TMDB token.** It was committed to git in the past and remains in history. Create a new token in TMDB, set it in Vercel and your local `.env`.
 
@@ -336,14 +377,14 @@ After a deploy, check: `/api/tmdb/movie/upcoming` returns JSON, `/tmdb-img/w500/
 
 ## 16. Open issues
 
-**Fixed in the latest passes:** the TMDB block and CORS symptom, the exposed token, committed `.env`, TV release dates on the details page, API errors treated as data, the trailer crash on titles with no videos, the embedded player continuing after Close, skeletons that never rendered, search query encoding and paging, the blank 404, dead footer links and lorem ipsum, missing TMDB attribution, debug logging, image sizes, and the missing SEO basics.
+**Fixed in the latest passes** (including TV dates on cards and carousels, the Explore TV sort, the not-found crash on invalid ids and a request race in `useFetch`): the TMDB block and CORS symptom, the exposed token, committed `.env`, TV release dates on the details page, API errors treated as data, the trailer crash on titles with no videos, the embedded player continuing after Close, skeletons that never rendered, search query encoding and paging, the blank 404, dead footer links and lorem ipsum, missing TMDB attribution, debug logging, image sizes, and the missing SEO basics.
 
 **Still open:**
 
 1. **Embedded player.** A third-party service that cannot be sandboxed (section 11).
 2. **Five npm advisories** remain: esbuild/Vite (dev server only, fix is Vite 8) and React Router (fix is v7). Both are breaking upgrades.
-3. **TV dates elsewhere.** `MovieCard` and `HeroBanner` read only `release_date`; TV items use `first_air_date`, and `dayjs(undefined)` is today.
-4. **Explore:** the "Release Date" sort uses `primary_release_date`, which is movie-only; `filters` is a module-level mutable object.
+3. **Explore:** `filters` is a module-level mutable object.
+4. **Where to Watch limits.** TMDB gives no per-service audio or dub languages and no per-provider deep links, so logos open TMDB's watch page for the country.
 5. **Sparse data:** `vote_average.toFixed` and `genre_ids.slice` assume the fields exist; hero and backdrop images assume `backdrop_path` is not null.
 6. **Person credits** can repeat a title (duplicate React keys), and the two person carousels sort the cached response in place.
 7. **Header** scroll listener resubscribes on every scroll position change.
@@ -367,5 +408,6 @@ After a deploy, check: `/api/tmdb/movie/upcoming` returns JSON, `/tmdb-img/w500/
 
 - Movie, TV and person data and images are provided by **[TMDB](https://www.themoviedb.org)**. *This product uses the TMDB API but is not endorsed or certified by TMDB.* Review TMDB's [API terms of use](https://www.themoviedb.org/api-terms-of-use).
 - Trailers play from **YouTube**.
+- Streaming availability data is provided by **JustWatch** through TMDB. Free downloads link to the **Internet Archive**.
 - Full-length playback comes from an external embed provider configured through `VITE_APP_VIDSRC_URL`. Movix hosts no video.
 - Icons: `react-icons`. The TMDB mark in the footer and About page is TMDB's own.

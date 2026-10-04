@@ -10,6 +10,33 @@
         margin-bottom: 25px;
     }
 
+    .languageChips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 20px;
+
+        .chip {
+            padding: 7px 16px;
+            border: 0;
+            border-radius: 18px;
+            font: inherit;
+            font-size: 14px;
+            color: white;
+            background-color: var(--black-light);
+            cursor: pointer;
+            transition: background-color ease 0.3s;
+
+            &:hover {
+                background-color: var(--black-lighter);
+            }
+
+            &.active {
+                background: var(--gradient);
+            }
+        }
+    }
+
     .videos {
         display: flex;
         gap: 10px;

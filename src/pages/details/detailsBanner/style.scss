@@ -204,10 +204,44 @@
                 }
             }
 
+            .linkRow {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                margin-bottom: 25px;
+
+                .pill {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 8px;
+                    padding: 9px 18px;
+                    border: 0;
+                    border-radius: 20px;
+                    font: inherit;
+                    font-size: 14px;
+                    font-weight: 600;
+                    color: white;
+                    background-color: var(--black-light);
+                    cursor: pointer;
+                    transition: background-color ease 0.3s, transform ease 0.3s;
+
+                    &:hover {
+                        background-color: var(--black-lighter);
+                        transform: translateY(-2px);
+                    }
+
+                    &.active {
+                        background: var(--gradient);
+                    }
+                }
+            }
+
             .info {
                 border-bottom: 1px solid rgba(255, 255, 255, 0.1);
                 padding: 15px 0;
                 display: flex;
+                flex-wrap: wrap;
+                row-gap: 6px;
 
                 .infoItem {
                     margin-right: 10px;

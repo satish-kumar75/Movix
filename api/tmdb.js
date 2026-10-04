@@ -1,4 +1,19 @@
-const allowedPath = /^(movie|tv|person|search|discover|trending|genre)(\/[A-Za-z0-9_]+)*$/;
+const allowedPath = /^(movie|tv|person|search|discover|trending|genre|collection|watch)(\/[A-Za-z0-9_]+)*$/;
+
+const request = async (url) => {
+  const options = {
+    headers: { Authorization: `Bearer ${process.env.VITE_APP_TMDB_TOKEN}` },
+  };
+
+  try {
+    const first = await fetch(url, options);
+    if (first.status < 500) return first;
+  } catch {
+    return fetch(url, options);
+  }
+
+  return fetch(url, options);
+};
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
@@ -16,9 +31,7 @@ export default async function handler(req, res) {
   const url = `https://api.themoviedb.org/3/${path}${search ? `?${search}` : ""}`;
 
   try {
-    const upstream = await fetch(url, {
-      headers: { Authorization: `Bearer ${process.env.VITE_APP_TMDB_TOKEN}` },
-    });
+    const upstream = await request(url);
     res.setHeader("Content-Type", "application/json");
     res.setHeader(
       "Cache-Control",

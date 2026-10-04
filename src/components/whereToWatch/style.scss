@@ -1,0 +1,157 @@
+@import "../../mixins.scss";
+
+.whereToWatch {
+    margin-bottom: 25px;
+    padding: 18px 0 4px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+    .loadingRow {
+        height: 44px;
+        max-width: 360px;
+        border-radius: 12px;
+    }
+
+    .head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .heading {
+        font-size: 20px;
+        font-weight: 600;
+    }
+
+    .region {
+        max-width: 100%;
+        padding: 8px 14px;
+        border: 0;
+        border-radius: 20px;
+        font-size: 14px;
+        color: white;
+        background-color: var(--black-light);
+        cursor: pointer;
+        transition: background-color ease 0.3s;
+
+        &:hover {
+            background-color: var(--black-lighter);
+        }
+
+        option {
+            color: white;
+            background-color: var(--black2);
+        }
+    }
+
+    .group {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 8px 16px;
+        margin-bottom: 14px;
+
+        @include md {
+            grid-template-columns: 110px minmax(0, 1fr);
+            align-items: start;
+        }
+
+        .label {
+            font-size: 14px;
+            line-height: 1.3;
+            color: rgba(255, 255, 255, 0.65);
+
+            @include md {
+                padding-top: 14px;
+            }
+        }
+    }
+
+    .providers {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        list-style: none;
+
+        a {
+            display: block;
+            width: 44px;
+            height: 44px;
+            border-radius: 11px;
+            overflow: hidden;
+            background-color: var(--black2);
+            transition: transform ease 0.3s, box-shadow ease 0.3s;
+
+            &:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.45);
+            }
+        }
+
+        img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+
+    .archive {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+
+        .action {
+            padding: 9px 18px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            background-color: var(--black-light);
+            transition: background-color ease 0.3s, transform ease 0.3s;
+
+            &:first-child {
+                background: var(--gradient);
+            }
+
+            &:hover {
+                transform: translateY(-2px);
+            }
+        }
+
+        .note {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.65);
+        }
+    }
+
+    .empty {
+        margin-bottom: 14px;
+        font-size: 15px;
+        line-height: 1.6;
+        color: rgba(255, 255, 255, 0.75);
+    }
+
+    .credit {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.55);
+
+        a {
+            text-decoration: underline;
+            text-underline-offset: 3px;
+
+            &:hover {
+                color: var(--pink);
+            }
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+        .providers a:hover,
+        .archive .action:hover {
+            transform: none;
+        }
+    }
+}

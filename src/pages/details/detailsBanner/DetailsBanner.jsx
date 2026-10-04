@@ -1,13 +1,17 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { BsBookmarkCheckFill, BsBookmarkPlus } from "react-icons/bs";
 import dayjs from "dayjs";
 
 import "./style.scss";
 
 import useFetch from "../../../hooks/useFetch";
 import useSeo from "../../../hooks/useSeo";
+import { toggleListItem } from "../../../store/listSlice";
+import { getRegion, languageName } from "../../../utils/region";
+import WhereToWatch from "../../../components/whereToWatch/WhereToWatch.jsx";
 import Genres from "../../../components/genres/Geners.jsx";
 import ContentWrapper from "../../../components/contentWrapper/ContentWrapper";
 import CircleRating from "../../../components/circleRating/CircleRating";
@@ -23,11 +27,69 @@ const DetailsBanner = ({ video, crew, mediaType, id }) => {
   const [isTrailer, setIsTrailer] = useState(true);
   const { data, loading } = useFetch(`/${mediaType}/${id}`);
   const { url } = useSelector((state) => state.home);
+  const listItems = useSelector((state) => state.list.items);
+  const dispatch = useDispatch();
 
+  const { data: ratings } = useFetch(
+    mediaType === "tv"
+      ? `/tv/${id}/content_ratings`
+      : `/movie/${id}/release_dates`
+  );
+  const { data: external } = useFetch(
+    mediaType === "tv" ? `/tv/${id}/external_ids` : null
+  );
+
+  const found = !!data && !data.status_code;
   const releaseDate = data?.release_date || data?.first_air_date;
+  const imdbId = data?.imdb_id || external?.imdb_id;
+  const saved = listItems.some(
+    (item) => item.id === Number(id) && item.media_type === mediaType
+  );
+
+  const spokenLanguages = data?.spoken_languages
+    ?.map((language) => language.english_name || language.name)
+    .filter(Boolean);
+  const languages = spokenLanguages?.length
+    ? spokenLanguages
+    : data?.original_language
+    ? [languageName(data.original_language)]
+    : [];
+
+  const certification = (() => {
+    const list = ratings?.results;
+    if (!Array.isArray(list)) return null;
+
+    const pick = (code) => {
+      const entry = list.find((item) => item.iso_3166_1 === code);
+      if (!entry) return null;
+      if (mediaType === "tv") return entry.rating || null;
+      return (
+        entry.release_dates
+          ?.map((release) => release.certification)
+          .find(Boolean) || null
+      );
+    };
+
+    return pick(getRegion()) || pick("US");
+  })();
+
+  const toggleList = () =>
+    dispatch(
+      toggleListItem({
+        id: data.id,
+        media_type: mediaType,
+        title: data.title,
+        name: data.name,
+        poster_path: data.poster_path,
+        vote_average: data.vote_average,
+        genre_ids: data.genres?.map((genre) => genre.id) || [],
+        release_date: data.release_date,
+        first_air_date: data.first_air_date,
+      })
+    );
 
   useSeo({
-    title: data
+    title: found
       ? `${data.title || data.name}${
           releaseDate ? ` (${dayjs(releaseDate).format("YYYY")})` : ""
         } | Movix`
@@ -69,7 +131,7 @@ const DetailsBanner = ({ video, crew, mediaType, id }) => {
     <div className="detailsBanner">
       {!loading ? (
         <>
-          {!!data && (
+          {found && (
             <React.Fragment>
               <div className="backdrop-img">
                 <Img src={url.backdrop + data.backdrop_path} alt="" />
@@ -115,6 +177,54 @@ const DetailsBanner = ({ video, crew, mediaType, id }) => {
                         </span>
                       </div>
                     </div>
+                    <WhereToWatch
+                      mediaType={mediaType}
+                      id={id}
+                      title={data.title || data.name}
+                      originalTitle={data.original_title || data.original_name}
+                      year={
+                        releaseDate ? Number(dayjs(releaseDate).format("YYYY")) : null
+                      }
+                    />
+                    <div className="linkRow">
+                      <button
+                        type="button"
+                        className={`pill ${saved ? "active" : ""}`}
+                        onClick={toggleList}
+                        aria-pressed={saved}
+                      >
+                        {saved ? <BsBookmarkCheckFill /> : <BsBookmarkPlus />}
+                        {saved ? "In My List" : "Add to My List"}
+                      </button>
+                      {imdbId && (
+                        <a
+                          className="pill"
+                          href={`https://www.imdb.com/title/${imdbId}/`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          IMDb
+                        </a>
+                      )}
+                      {mediaType === "movie" && (
+                        <a
+                          className="pill"
+                          href={`https://letterboxd.com/tmdb/${id}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Letterboxd
+                        </a>
+                      )}
+                      <a
+                        className="pill"
+                        href={`https://www.themoviedb.org/${mediaType}/${id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        TMDB
+                      </a>
+                    </div>
                     <div className="overview">
                       <h2 className="heading">Overview</h2>
                       <div className="description">{data.overview}</div>
@@ -140,6 +250,20 @@ const DetailsBanner = ({ video, crew, mediaType, id }) => {
                           <span className="text">
                             {toHoursAndMinutes(data.runtime)}
                           </span>
+                        </div>
+                      )}
+                      {languages.length > 0 && (
+                        <div className="infoItem">
+                          <span className="text bold">
+                            {languages.length > 1 ? "Languages: " : "Language: "}
+                          </span>
+                          <span className="text">{languages.join(", ")}</span>
+                        </div>
+                      )}
+                      {certification && (
+                        <div className="infoItem">
+                          <span className="text bold">Rated: </span>
+                          <span className="text">{certification}</span>
                         </div>
                       )}
                     </div>

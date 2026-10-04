@@ -20,12 +20,24 @@ const features = [
     text: "Overview, runtime, crew, trailers and similar picks, all on one page.",
   },
   {
+    name: "Where to watch",
+    text: "See which services stream, rent or sell a title in your country, and get a free download for public-domain classics.",
+  },
+  {
     name: "The people behind it",
     text: "Tap a cast member to read their biography and see the films they're known for.",
   },
   {
-    name: "Explore and search",
-    text: "Browse the whole catalogue by genre and sort order, or look up something specific.",
+    name: "Seasons and episodes",
+    text: "Browse every season of a show with episode stills, air dates and ratings.",
+  },
+  {
+    name: "Explore by language",
+    text: "Filter the catalogue by genre, language and sort order, including Hindi, Tamil, Telugu and more, or search for something specific.",
+  },
+  {
+    name: "My List",
+    text: "Save titles for later. Your list stays in your browser and never leaves your device.",
   },
 ];
 
