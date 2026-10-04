@@ -9,6 +9,9 @@ import Geners from "../../../components/genres/Geners";
 import CircleRating from "../../../components/circleRating/CircleRating";
 import dayjs from "dayjs";
 
+const heroTitle = (item) =>
+  `${item.name || item.title} (${dayjs(item.release_date).format("YYYY")})`;
+
 const HeroBanner = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [prevIndex, setPrevIndex] = useState(0);
@@ -66,12 +69,11 @@ const HeroBanner = () => {
                 alt={item.name || item.title}
               />
               <div className="content">
-                <h1 className="title">
-                  {" "}
-                  {`${item.name || item.title} (${dayjs(
-                    item.release_date
-                  ).format("YYYY")})`}
-                </h1>
+                {index === currentIndex ? (
+                  <h1 className="title">{heroTitle(item)}</h1>
+                ) : (
+                  <h2 className="title">{heroTitle(item)}</h2>
+                )}
                 <Geners data={item.genre_ids} />
                 <div className="des">{item.overview}</div>
                 <div className="row">

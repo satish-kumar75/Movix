@@ -16,7 +16,13 @@ const fetchList = async (path, page) => {
 
 export default async function handler(req, res) {
   const origin = `https://${req.headers.host}`;
-  const urls = new Set(["/", "/explore/movie", "/explore/tv"]);
+  const urls = new Set([
+    "/",
+    "/explore/movie",
+    "/explore/tv",
+    "/about",
+    "/privacy",
+  ]);
 
   const results = await Promise.all(
     lists.flatMap(({ type, path }) =>

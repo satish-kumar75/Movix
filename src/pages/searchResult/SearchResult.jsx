@@ -1,7 +1,7 @@
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 import "./Search.scss";
@@ -23,26 +23,22 @@ const SearchResult = () => {
 
   const fetchInitialData = () => {
     setLoading(true);
-    fetchDataFromApi(`/search/multi?query=${query}&page=${pageNum}`).then(
-      (res) => {
-        setData(res);
-        setPageNum((prev) => prev + 1);
-        setLoading(false);
-      }
-    );
+    fetchDataFromApi("/search/multi", { query, page: 1 }).then((res) => {
+      setData(res);
+      setPageNum(2);
+      setLoading(false);
+    });
   };
 
   const fetchNextPageData = () => {
-    fetchDataFromApi(`/search/multi?query=${query}&page=${pageNum}`).then(
-      (res) => {
-        if (data?.results) {
-          setData({ ...data, results: [...data?.results, ...res.results] });
-        } else {
-          setData(res);
-        }
-        setPageNum((prev) => prev + 1);
+    fetchDataFromApi("/search/multi", { query, page: pageNum }).then((res) => {
+      if (data?.results) {
+        setData({ ...data, results: [...data?.results, ...res.results] });
+      } else {
+        setData(res);
       }
-    );
+      setPageNum((prev) => prev + 1);
+    });
   };
 
   useEffect(() => {
@@ -55,7 +51,7 @@ const SearchResult = () => {
       {loading && <Spinner initial={true} />}
       {!loading && (
         <ContentWrapper>
-          {data?.results.length > 0 ? (
+          {data?.results?.length > 0 ? (
             <>
               <h1 className="pageTitle">
                 {`Search ${
@@ -83,7 +79,12 @@ const SearchResult = () => {
               </InfiniteScroll>
             </>
           ) : (
-            <div className="resultsNotFound">Sorry, Results Not Found</div>
+            <div className="resultNotFound">
+              No results for &apos;{query}&apos;. Check the spelling, try a
+              shorter title, or browse{" "}
+              <Link to="/explore/movie">movies</Link> and{" "}
+              <Link to="/explore/tv">TV shows</Link> instead.
+            </div>
           )}
         </ContentWrapper>
       )}

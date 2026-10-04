@@ -22,6 +22,8 @@ const VideosSection = ({ data, loading }) => {
     );
   };
 
+  if (!loading && !data?.results?.length) return null;
+
   return (
     <div className="videosSection">
       <ContentWrapper>
@@ -50,9 +52,7 @@ const VideosSection = ({ data, loading }) => {
           </div>
         ) : (
           <div className="videoSkeleton">
-            {[...Array(5)].map((_, index) => {
-              loadingSkeleton(index);
-            })}
+            {[...Array(5)].map((_, index) => loadingSkeleton(index))}
           </div>
         )}
       </ContentWrapper>

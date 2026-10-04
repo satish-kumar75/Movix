@@ -5,8 +5,29 @@
     padding-top: 100px;
 
     .resultNotFound {
-        font-size: 24px;
-        color: var(--black-light);
+        display: block;
+        font-size: 20px;
+        line-height: 1.5;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .pageIntro {
+        margin-bottom: 20px;
+
+        @include md {
+            max-width: 460px;
+            margin-bottom: 0;
+        }
+
+        .pageTitle {
+            margin-bottom: 8px;
+        }
+
+        .pageText {
+            font-size: 14px;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.6);
+        }
     }
 
     .pageHeader {

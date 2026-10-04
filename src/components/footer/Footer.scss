@@ -48,10 +48,25 @@
         max-width: 800px;
         margin-bottom: 20px;
 
+        a {
+            text-decoration: underline;
+            text-underline-offset: 3px;
+
+            &:hover {
+                color: var(--pink);
+            }
+        }
+
         @include md {
             font-size: 14px;
             margin-bottom: 30px;
         }
+    }
+
+    .copyright {
+        margin-top: 25px;
+        font-size: 12px;
+        opacity: 0.4;
     }
 
     .socialIcons {

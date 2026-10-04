@@ -54,7 +54,7 @@ const Header = () => {
 
   const searchQueryHandler = (e) => {
     if (e.key === "Enter" && query.length > 0) {
-      navigate(`/search/${query}`);
+      navigate(`/search/${encodeURIComponent(query)}`);
       setTimeout(() => {
         setShowSearch(false);
       }, 1000);
@@ -102,7 +102,8 @@ const Header = () => {
               <HiOutlineSearch />
               <input
                 type="text"
-                placeholder="Search for a movie or TV shows..."
+                placeholder="Search for a movie or TV show..."
+                aria-label="Search movies and TV shows"
                 onChange={(e) => {
                   setQuery(e.target.value);
                 }}

@@ -114,9 +114,16 @@ const Explore = () => {
     <div className="explorePage">
       <ContentWrapper>
         <div className="pageHeader">
-          <h1 className="pageTitle">
-            {mediaType === "tv" ? "Explore TV Shows" : "Explore Movies"}
-          </h1>
+          <div className="pageIntro">
+            <h1 className="pageTitle">
+              {mediaType === "tv" ? "Explore TV Shows" : "Explore Movies"}
+            </h1>
+            <p className="pageText">
+              Filter by genre, sort by rating or release date, and keep
+              scrolling. Every {mediaType === "tv" ? "show" : "movie"} opens
+              with its cast, trailers and similar picks.
+            </p>
+          </div>
           <div className="filters">
             <Select
               isMulti
@@ -162,7 +169,10 @@ const Explore = () => {
                 })}
               </InfiniteScroll>
             ) : (
-              <span className="resultNotFound">Sorry, Results not found!</span>
+              <span className="resultNotFound">
+                Nothing matches those filters. Try removing a genre or changing
+                the sort order.
+              </span>
             )}
           </>
         )}

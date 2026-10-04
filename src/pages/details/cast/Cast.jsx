@@ -21,6 +21,8 @@ const Cast = ({ data, loading }) => {
       </div>
     );
   };
+  if (!loading && !data?.length) return null;
+
   return (
     <div className="castSection">
       <ContentWrapper>
@@ -48,9 +50,7 @@ const Cast = ({ data, loading }) => {
           </div>
         ) : (
           <div className="castSkeleton">
-            {[...Array(6)].map((_, index) => {
-              skeleton(index);
-            })}
+            {[...Array(6)].map((_, index) => skeleton(index))}
           </div>
         )}
       </ContentWrapper>

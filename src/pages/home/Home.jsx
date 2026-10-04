@@ -7,7 +7,7 @@ import useSeo from "../../hooks/useSeo";
 
 const Home = () => {
   useSeo({
-    title: "Movix - Discover Trending, Popular & Top Rated Movies and TV Shows",
+    title: "Movix - Trending, Popular & Top Rated Movies and TV Shows",
   });
 
   return (

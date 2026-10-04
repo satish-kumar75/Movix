@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import useFetch from "../../hooks/useFetch";
 import useSeo from "../../hooks/useSeo";
+import PageNotFound from "../404/PageNotFound";
 import SimilarMovies from "./carousels/SimilarMovies";
 
 const Person = () => {
@@ -28,6 +29,10 @@ const Person = () => {
         : undefined,
     type: "profile",
   });
+
+  if (data?.status_code === 34) {
+    return <PageNotFound />;
+  }
 
   return (
     <div>

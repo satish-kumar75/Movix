@@ -72,6 +72,10 @@ export default async function handler(req, res) {
   const { mediaType, id } = req.query;
   const origin = `https://${req.headers.host}`;
 
+  if (!/^(movie|tv)$/.test(mediaType) || !/^[0-9]+$/.test(id)) {
+    return res.status(404).send("Not found");
+  }
+
   try {
     const [page, tmdb] = await Promise.all([
       fetch(`${origin}/index.html`),

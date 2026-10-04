@@ -1,31 +1,204 @@
+@import "../../mixins.scss";
+
 .pageNotFound {
+    position: relative;
     min-height: 700px;
-    padding-top: 200px;
-    text-align: center;
+    padding: 110px 0 40px;
     color: white;
+    overflow: hidden;
+
+    &::before {
+        content: "";
+        position: absolute;
+        top: -120px;
+        left: 50%;
+        width: 640px;
+        height: 640px;
+        transform: translateX(-50%);
+        background: radial-gradient(circle, rgba(218, 47, 104, 0.22), rgba(248, 158, 0, 0.06) 45%, transparent 70%);
+        pointer-events: none;
+        animation: glow 6s ease-in-out infinite alternate;
+    }
+
+    .hero {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        margin-bottom: 70px;
+    }
+
+    .code {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        margin-bottom: 24px;
+
+        @include md {
+            gap: 14px;
+        }
+
+        .digit {
+            font-size: 110px;
+            font-weight: 800;
+            line-height: 1;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: float 4s ease-in-out infinite alternate;
+
+            @include md {
+                font-size: 190px;
+            }
+
+            &:last-child {
+                animation-delay: -2s;
+            }
+        }
+
+        .reel {
+            width: 82px;
+            height: 82px;
+            animation: spin 14s linear infinite;
+            filter: drop-shadow(0 0 18px rgba(218, 47, 104, 0.45));
+
+            @include md {
+                width: 150px;
+                height: 150px;
+            }
+        }
+    }
+
+    .eyebrow,
+    .title,
+    .text,
+    .actions {
+        animation: rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .eyebrow {
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--orange);
+        margin-bottom: 12px;
+        animation-delay: 0.1s;
+    }
 
     .title {
-        font-size: 96px;
+        font-size: 28px;
         font-weight: 700;
-        line-height: 1.1;
-        margin-bottom: 15px;
-        background: var(--gradient);
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
+        line-height: 1.2;
+        max-width: 640px;
+        margin-bottom: 16px;
+        animation-delay: 0.2s;
+
+        @include md {
+            font-size: 40px;
+        }
     }
 
     .text {
-        font-size: 20px;
-        margin-bottom: 30px;
-        opacity: 0.7;
+        font-size: 16px;
+        line-height: 1.7;
+        max-width: 560px;
+        margin-bottom: 32px;
+        color: rgba(255, 255, 255, 0.72);
+        animation-delay: 0.3s;
+
+        @include md {
+            font-size: 18px;
+        }
     }
 
-    .homeLink {
-        display: inline-block;
-        padding: 12px 28px;
-        border-radius: 30px;
-        font-weight: 600;
-        background: var(--gradient);
+    .actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
+        animation-delay: 0.4s;
+
+        a {
+            padding: 13px 26px;
+            border-radius: 30px;
+            font-size: 15px;
+            font-weight: 600;
+            transition: transform ease 0.3s, box-shadow ease 0.3s, background-color ease 0.3s;
+
+            &:hover {
+                transform: translateY(-2px);
+            }
+        }
+
+        .primary {
+            background: var(--gradient);
+
+            &:hover {
+                box-shadow: 0 6px 24px rgba(218, 47, 104, 0.45);
+            }
+        }
+
+        .secondary {
+            background-color: var(--black-light);
+
+            &:hover {
+                background-color: var(--black-lighter);
+            }
+        }
+    }
+
+    @keyframes spin {
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    @keyframes float {
+        0% {
+            transform: translateY(-8px);
+        }
+
+        100% {
+            transform: translateY(8px);
+        }
+    }
+
+    @keyframes glow {
+        0% {
+            opacity: 0.55;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+
+    @keyframes rise {
+        0% {
+            opacity: 0;
+            transform: translateY(18px);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+        &::before,
+        .code .digit,
+        .code .reel,
+        .eyebrow,
+        .title,
+        .text,
+        .actions {
+            animation: none;
+        }
     }
 }

@@ -21,7 +21,6 @@ const PersonDetails = ({ data, loading, url, personId }) => {
   const { data: social, loading: socialLoading } = useFetch(
     `/person/${personId}/external_ids`
   );
-  console.log("https://www.facebook.com/", social?.facebook_id);
   const toggleReadMore = () => {
     setIsReadMore(!isReadMore);
   };

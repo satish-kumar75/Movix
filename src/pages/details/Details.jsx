@@ -2,6 +2,7 @@
 import { useLocation, useParams } from "react-router-dom";
 import "./Details.scss";
 import DetailsBanner from "./detailsBanner/DetailsBanner";
+import PageNotFound from "../404/PageNotFound";
 import useFetch from "../../hooks/useFetch";
 import Cast from "../details/cast/Cast";
 import VideosSection from "./VideosSection/VideoSection";
@@ -15,6 +16,10 @@ const Details = () => {
   const { data: credits, loading: creditsLoading } = useFetch(
     `/${mediaType}/${id}/credits`
   );
+  if (data?.status_code === 34 || credits?.status_code === 34) {
+    return <PageNotFound />;
+  }
+
   return (
     <div>
       <DetailsBanner
