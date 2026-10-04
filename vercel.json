@@ -1,5 +1,6 @@
 {
   "rewrites": [
+    { "source": "/api/tmdb/:path*", "destination": "/api/tmdb?path=:path*" },
     { "source": "/tmdb-img/:path*", "destination": "https://image.tmdb.org/t/p/:path*" },
     { "source": "/((?!api/|tmdb-img/).*)", "destination": "/" }
   ]

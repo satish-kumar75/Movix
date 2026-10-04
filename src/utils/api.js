@@ -1,7 +1,7 @@
 import axios from "axios";
 
-// Same-origin proxy (api/tmdb/[...path].js on Vercel, Vite proxy in dev).
-// The TMDB token lives server-side in TMDB_TOKEN, never in the browser bundle.
+// Same-origin proxy (api/tmdb.js on Vercel, Vite proxy in dev).
+// The TMDB token is only read server-side, never in the browser bundle.
 const BASE_URL = "/api/tmdb";
 
 const cache = {};
