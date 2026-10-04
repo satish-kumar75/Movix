@@ -41,7 +41,6 @@ const PageNotFound = () => {
             </svg>
             <span className="digit">4</span>
           </div>
-          <p className="eyebrow">Error 404</p>
           <h1 className="title">This scene didn&apos;t make the final cut</h1>
           <p className="text">
             The page you&apos;re looking for doesn&apos;t exist. The link might

@@ -41,6 +41,16 @@ a {
   text-decoration: none;
 }
 
+::selection {
+  background: var(--pink);
+  color: white;
+}
+
+:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 3px;
+}
+
 ::-webkit-scrollbar {
   display: none;
 }

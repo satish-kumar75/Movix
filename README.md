@@ -48,6 +48,12 @@ I developed a stunning, fully responsive movie website using the TMDB API and Re
 
 👉 **Global State Management with Redux**: Efficient state management across the entire application.
 
+👉 **Works on Blocked Networks**: TMDB data and images are served through a same-origin proxy on Vercel, so the site loads even where TMDB is blocked and the API token never reaches the browser.
+
+👉 **Search-Friendly**: Per-page titles, descriptions and Open Graph tags, server-rendered metadata and Movie/TVSeries structured data for title pages, a dynamic sitemap and `robots.txt`.
+
+👉 **About and Privacy Pages**: Plain-language pages describing the project and exactly what data the site touches, plus an animated 404 page.
+
 ## <a name="quick-start">🤸 Quick Start</a>
 
 Follow these steps to set up the project locally on your machine.
@@ -75,6 +81,18 @@ Install the project dependencies using npm:
 npm install
 ```
 
+**Environment Variables**
+
+Copy `.env.example` to `.env` and fill in your values:
+
+```env
+VITE_APP_TMDB_TOKEN=your TMDB API Read Access Token
+VITE_APP_VIDSRC_URL=base URL of the embedded player
+PROXY_TARGET=https://your-app.vercel.app
+```
+
+`VITE_APP_TMDB_TOKEN` is only read by the serverless functions in `api/`, never by the browser bundle. `PROXY_TARGET` is used by the Vite dev server to forward `/api` and `/tmdb-img` to your deployed site, so local development works even on networks that block TMDB. Put it in `.env.local` if you prefer. `.env` files are git-ignored.
+
 **Running the Project**
 
 ```bash
@@ -82,6 +100,10 @@ npm run dev
 ```
 
 Open [http://localhost:5173](http://localhost:5173) in your browser to view the project.
+
+**Deploying to Vercel**
+
+Import the repository, add `VITE_APP_TMDB_TOKEN` and `VITE_APP_VIDSRC_URL` under Project Settings → Environment Variables, and deploy. `vercel.json` already contains the proxy rewrites, the SPA fallback and the security headers, and `package.json` pins Node 24.
 
 ## <a name="snippets">🕸️ Snippets</a>
 

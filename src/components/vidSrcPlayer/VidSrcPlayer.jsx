@@ -1,7 +1,4 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import React from "react";
-
 import "./style.scss";
 
 const VidSrcPlayer = ({ show, setShow, videoId, setVideoId, mediaType }) => {
@@ -9,7 +6,7 @@ const VidSrcPlayer = ({ show, setShow, videoId, setVideoId, mediaType }) => {
   const iframeSrc = `${videoURL}/${mediaType}/${videoId}`;
   const hidePopup = () => {
     setShow(false);
-    setVideoId(null); // Set videoId to null to unmount the iframe
+    setVideoId(null);
   };
   return (
     <div className={`videoPopup ${show ? "visible" : ""}`}>
@@ -18,12 +15,13 @@ const VidSrcPlayer = ({ show, setShow, videoId, setVideoId, mediaType }) => {
         <span className="closeBtn" onClick={hidePopup}>
           Close
         </span>
-        {videoId && ( // Conditionally render the iframe only if videoId is not null
+        {show && videoId && (
           <iframe
             className="player"
             src={iframeSrc}
             title="Video player"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+            allowFullScreen
           ></iframe>
         )}
       </div>

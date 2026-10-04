@@ -7,19 +7,6 @@
     color: white;
     overflow: hidden;
 
-    &::before {
-        content: "";
-        position: absolute;
-        top: -120px;
-        left: 50%;
-        width: 640px;
-        height: 640px;
-        transform: translateX(-50%);
-        background: radial-gradient(circle, rgba(218, 47, 104, 0.22), rgba(248, 158, 0, 0.06) 45%, transparent 70%);
-        pointer-events: none;
-        animation: glow 6s ease-in-out infinite alternate;
-    }
-
     .hero {
         position: relative;
         display: flex;
@@ -34,7 +21,7 @@
         align-items: center;
         justify-content: center;
         gap: 6px;
-        margin-bottom: 24px;
+        margin-bottom: 28px;
 
         @include md {
             gap: 14px;
@@ -44,18 +31,15 @@
             font-size: 110px;
             font-weight: 800;
             line-height: 1;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: float 4s ease-in-out infinite alternate;
+            letter-spacing: -0.02em;
+            color: var(--orange);
 
             @include md {
                 font-size: 190px;
             }
 
             &:last-child {
-                animation-delay: -2s;
+                color: var(--pink);
             }
         }
 
@@ -63,7 +47,6 @@
             width: 82px;
             height: 82px;
             animation: spin 14s linear infinite;
-            filter: drop-shadow(0 0 18px rgba(218, 47, 104, 0.45));
 
             @include md {
                 width: 150px;
@@ -72,21 +55,10 @@
         }
     }
 
-    .eyebrow,
     .title,
     .text,
     .actions {
-        animation: rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
-    }
-
-    .eyebrow {
-        font-size: 13px;
-        font-weight: 600;
-        letter-spacing: 3px;
-        text-transform: uppercase;
-        color: var(--orange);
-        margin-bottom: 12px;
-        animation-delay: 0.1s;
+        animation: rise 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
     }
 
     .title {
@@ -95,7 +67,8 @@
         line-height: 1.2;
         max-width: 640px;
         margin-bottom: 16px;
-        animation-delay: 0.2s;
+        text-wrap: balance;
+        animation-delay: 0.1s;
 
         @include md {
             font-size: 40px;
@@ -107,8 +80,8 @@
         line-height: 1.7;
         max-width: 560px;
         margin-bottom: 32px;
-        color: rgba(255, 255, 255, 0.72);
-        animation-delay: 0.3s;
+        color: rgba(255, 255, 255, 0.75);
+        animation-delay: 0.2s;
 
         @include md {
             font-size: 18px;
@@ -120,14 +93,14 @@
         flex-wrap: wrap;
         justify-content: center;
         gap: 12px;
-        animation-delay: 0.4s;
+        animation-delay: 0.3s;
 
         a {
             padding: 13px 26px;
             border-radius: 30px;
             font-size: 15px;
             font-weight: 600;
-            transition: transform ease 0.3s, box-shadow ease 0.3s, background-color ease 0.3s;
+            transition: transform ease 0.3s, background-color ease 0.3s;
 
             &:hover {
                 transform: translateY(-2px);
@@ -136,10 +109,6 @@
 
         .primary {
             background: var(--gradient);
-
-            &:hover {
-                box-shadow: 0 6px 24px rgba(218, 47, 104, 0.45);
-            }
         }
 
         .secondary {
@@ -157,26 +126,6 @@
         }
     }
 
-    @keyframes float {
-        0% {
-            transform: translateY(-8px);
-        }
-
-        100% {
-            transform: translateY(8px);
-        }
-    }
-
-    @keyframes glow {
-        0% {
-            opacity: 0.55;
-        }
-
-        100% {
-            opacity: 1;
-        }
-    }
-
     @keyframes rise {
         0% {
             opacity: 0;
@@ -191,10 +140,7 @@
 
     @media (prefers-reduced-motion: reduce) {
 
-        &::before,
-        .code .digit,
         .code .reel,
-        .eyebrow,
         .title,
         .text,
         .actions {

@@ -56,13 +56,12 @@ const DetailsBanner = ({ video, crew, mediaType, id }) => {
 
   const handleTrailerClick = () => {
     setShow(true);
-    setVideoId(video.key);
+    setVideoId(video?.key);
     setIsTrailer(true);
   };
 
   const handleMovieClick = () => {
     setShow(true);
-    setVideoId(video.key);
     setIsTrailer(false);
   };
 
@@ -103,10 +102,12 @@ const DetailsBanner = ({ video, crew, mediaType, id }) => {
                     <Genres data={_genres} />
                     <div className="row">
                       <CircleRating rating={data.vote_average.toFixed(1)} />
-                      <div className="playbtn" onClick={handleTrailerClick}>
-                        <PlayIcon />
-                        <span className="text">Watch Trailer</span>
-                      </div>
+                      {video && (
+                        <div className="playbtn" onClick={handleTrailerClick}>
+                          <PlayIcon />
+                          <span className="text">Watch Trailer</span>
+                        </div>
+                      )}
                       <div className="playbtn" onClick={handleMovieClick}>
                         <PlayIcon />
                         <span className="text">

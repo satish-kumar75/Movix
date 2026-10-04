@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { FaGithub } from "react-icons/fa";
 
 import ContentWrapper from "../contentWrapper/ContentWrapper";
+import tmdbLogo from "../../assets/tmdb-logo.png";
 
 import "./Footer.scss";
 
@@ -42,6 +43,15 @@ const Footer = () => {
           YouTube and the full player is embedded from a third-party service.
         </p>
         <div className="socialIcons">
+          <a
+            className="icon tmdb"
+            href="https://www.themoviedb.org"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Data provided by TMDB"
+          >
+            <img src={tmdbLogo} alt="TMDB" />
+          </a>
           <a
             className="icon"
             href="https://github.com/satish-kumar75/Movix"
