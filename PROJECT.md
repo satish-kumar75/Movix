@@ -52,7 +52,7 @@ There is no login, backend database or user data. Everything is read live from T
 | **Person page**: photo, biography with read more, birth data, aliases, social links, acting and production credits | `pages/person` |
 | **Explore** movies or TV with genre multi-select, sorting and infinite scroll | `pages/explore` |
 | **Search** across movies and TV with infinite scroll | `pages/searchResult` |
-| **Where to Watch** strip under the rating row: provider logos for Stream, Free, Free with ads, Rent and Buy, a country picker (auto-detected, remembered) and JustWatch credit | `components/whereToWatch` |
+| **Where to Watch** strip under the rating row: provider logos for Stream, Free, Free with ads, Rent and Buy, a searchable country dropdown (auto-detected, remembered) and JustWatch credit | `components/whereToWatch` |
 | **Free legal download** (Download and Watch free) for public-domain classics, from the Internet Archive's curated collection | `api/archive.js`, `components/whereToWatch` |
 | **Languages:** language and age rating on the details page, trailers filterable by language, and an original-language filter on Explore | `pages/details`, `pages/explore` |
 | **My List:** bookmark button, `/my-list` page and a header badge, saved in the browser | `store/listSlice.js`, `pages/myList` |
@@ -268,7 +268,7 @@ The chosen watch country is kept in `localStorage` (`movix-region`) by `utils/re
 
 Directly under the rating and trailer buttons, `DetailsBanner` renders **Where to Watch** and a row of pills (Add to My List, IMDb, Letterboxd for movies, TMDB). The info list adds **Language** (spoken languages) and **Rated** (age rating for the visitor's country, falling back to the US).
 
-**Where to Watch (`components/whereToWatch`):** reads `/watch/providers`, lists the countries TMDB has data for in a picker, and starts from the saved country, then the browser language region, then US. Logos link to TMDB's watch page for that country (TMDB does not expose per-provider deep links). It shows a skeleton while loading, nothing if there is no data at all, and a short note if the title is not listed in the chosen country. JustWatch is credited.
+**Where to Watch (`components/whereToWatch`):** reads `/watch/providers`, lists the countries TMDB has data for in a searchable dropdown (the same `react-select` the Explore filters use, themed from the palette: `--black-light` control, `--black2` menu, brand gradient on the selected country, orange focus ring, themed thin scrollbar, chevron that rotates when open). Typing filters the list, arrow keys, Enter and Escape work, and an empty search says "No country found". On phones the menu anchors to the left of the control so it stays on screen. It starts from the saved country, then the browser language region, then US. Logos link to TMDB's watch page for that country (TMDB does not expose per-provider deep links). It shows a skeleton while loading, nothing if there is no data at all, and a short note if the title is not listed in the chosen country. JustWatch is credited.
 
 **VideosSection:** requests videos in 25 languages and shows language chips (All, English, Tamil, ...) when more than one language exists.
 

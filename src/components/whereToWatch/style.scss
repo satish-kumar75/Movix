@@ -25,24 +25,123 @@
         font-weight: 600;
     }
 
-    .region {
+    .regionPicker {
+        width: 220px;
         max-width: 100%;
-        padding: 8px 14px;
-        border: 0;
-        border-radius: 20px;
-        font-size: 14px;
-        color: white;
-        background-color: var(--black-light);
-        cursor: pointer;
-        transition: background-color ease 0.3s;
 
-        &:hover {
-            background-color: var(--black-lighter);
+        .region__control {
+            min-height: 38px;
+            border: 0;
+            border-radius: 20px;
+            background-color: var(--black-light);
+            box-shadow: none;
+            cursor: pointer;
+            transition: background-color ease 0.3s;
+
+            &:hover {
+                background-color: var(--black-lighter);
+            }
+
+            &--is-focused {
+                background-color: var(--black-lighter);
+                outline: 2px solid var(--orange);
+                outline-offset: 2px;
+            }
         }
 
-        option {
+        .region__value-container {
+            padding: 0 4px 0 16px;
+        }
+
+        .region__single-value,
+        .region__input-container {
+            margin: 0;
+            font-size: 14px;
             color: white;
+        }
+
+        .region__placeholder {
+            margin: 0;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.65);
+        }
+
+        .region__dropdown-indicator {
+            padding: 8px 12px 8px 4px;
+            color: white;
+            transition: color ease 0.3s;
+
+            svg {
+                transition: transform ease 0.3s;
+            }
+
+            &:hover {
+                color: var(--orange);
+            }
+        }
+
+        .region__control--menu-is-open .region__dropdown-indicator svg {
+            transform: rotate(180deg);
+        }
+
+        .region__menu {
+            left: 0;
+            right: auto;
+            z-index: 5;
+            width: 260px;
+            max-width: calc(100vw - 40px);
+            margin: 8px 0 0;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 14px;
             background-color: var(--black2);
+            box-shadow: 0 14px 32px rgba(0, 0, 0, 0.5);
+
+            @include md {
+                left: auto;
+                right: 0;
+            }
+        }
+
+        .region__menu-list {
+            padding: 6px;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+
+            &::-webkit-scrollbar {
+                display: block;
+                width: 6px;
+            }
+
+            &::-webkit-scrollbar-thumb {
+                border-radius: 3px;
+                background-color: rgba(255, 255, 255, 0.25);
+            }
+        }
+
+        .region__option {
+            padding: 10px 12px;
+            border-radius: 10px;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.85);
+            cursor: pointer;
+
+            &--is-focused {
+                color: white;
+                background-color: var(--black-light);
+            }
+
+            &--is-selected {
+                font-weight: 600;
+                color: white;
+                background: var(--gradient);
+            }
+        }
+
+        .region__menu-notice {
+            padding: 12px;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.65);
         }
     }
 

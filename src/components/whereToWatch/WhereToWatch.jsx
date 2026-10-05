@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
+import Select from "react-select";
 
 import "./style.scss";
 
@@ -51,12 +52,15 @@ const WhereToWatch = ({ mediaType, id, title, originalTitle, year }) => {
     }))
     .filter((group) => group.providers.length > 0);
 
-  const options = countries.includes(region) ? countries : [region, ...countries];
+  const options = (
+    countries.includes(region) ? countries : [region, ...countries]
+  ).map((code) => ({ value: code, label: regionName(code) }));
   const archiveId = archive?.identifier;
 
-  const onRegionChange = (event) => {
-    setRegion(event.target.value);
-    saveRegion(event.target.value);
+  const onRegionChange = (option) => {
+    if (!option) return;
+    setRegion(option.value);
+    saveRegion(option.value);
   };
 
   if (loading) {
@@ -74,18 +78,22 @@ const WhereToWatch = ({ mediaType, id, title, originalTitle, year }) => {
       <div className="head">
         <h2 className="heading">Where to watch</h2>
         {countries.length > 0 && (
-          <select
-            className="region"
-            value={region}
-            onChange={onRegionChange}
+          <Select
+            className="regionPicker"
+            classNamePrefix="region"
+            inputId="watch-region"
             aria-label="Country"
-          >
-            {options.map((code) => (
-              <option key={code} value={code}>
-                {regionName(code)}
-              </option>
-            ))}
-          </select>
+            value={options.find((option) => option.value === region)}
+            options={options}
+            onChange={onRegionChange}
+            isSearchable
+            isClearable={false}
+            menuPlacement="auto"
+            maxMenuHeight={280}
+            placeholder="Search country"
+            noOptionsMessage={() => "No country found"}
+            components={{ IndicatorSeparator: null }}
+          />
         )}
       </div>
 
